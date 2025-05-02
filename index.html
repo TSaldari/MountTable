@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--Developer: Thomas Saldari Start Date: 4/15/2025-->
+	<meta charset="UTF-8">
+	<title>Targeted Fitness</title>
+	<link rel="stylesheet" type="text/css" href="CSS/style.css" media="screen and (min-width:481px)">
+	<link rel="stylesheet" type="text/css" href="CSS/mobileStyle.css" media="screen and (max-width:480px)">
+	<script src="JavaScript/script.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+	<!--Page Content-->
+	<nav>
+		<ul>
+			<li class="start"><div class="dropdown">
+				<a href="index.html">Targeted Fitness</a>
+				<div class="dropdown-content">
+					<p>Dark Mode</p>
+					<label class="switch">
+						<input type="checkbox" id="themeToggle" onclick="changeColor()">
+						<span class="slider round"></span>
+					</label>
+				</div> 
+			</div></li>
+			
+			<li><div class="dropdown">
+				<a class="dropbtn" href="pushDay.html">Push Day</a>
+				<div class="dropdown-content">
+					<a href="pushDay.html#chest" onclick="navigateToSection('#chest')">Chest</a>
+					<a href="pushDay.html#triceps" onclick="navigateToSection('#triceps')">Triceps</a>
+					<a href="pushDay.html#shoulders" onclick="navigateToSection('#shoulders')">Shoulders</a>
+				</div>
+			</div></li>
+			<li><div class="dropdown">
+				<a class="dropbtn" href="pullDay.html">Pull Day</a>
+				<div class="dropdown-content">
+					<a href="pullDay.html#upperBack" onclick="navigateToSection('#upperBack')">Upper Back</a>
+					<a href="pullDay.html#lats" onclick="navigateToSection('#lats')">Lats</a>
+					<a href="pullDay.html#biceps" onclick="navigateToSection('#biceps')">Biceps</a>
+				</div>
+			</div></li>
+			<li><div class="dropdown">
+				<a class="dropbtn" href="legDay.html">Leg Day</a>
+				<div class="dropdown-content">
+					<a href="legDay.html#quads" onclick="navigateToSection('#quads')">Quads</a>
+					<a href="legDay.html#hamstrings" onclick="navigateToSection('#hamstrings')">Hamstrings</a>
+					<a href="legDay.html#glutes" onclick="navigateToSection('#glutes')">Glutes</a>
+					<a href="legDay.html#calves" onclick="navigateToSection('#calves')">Calves</a>
+				</div>
+			</div></li>
+			<li><div class="dropdown">
+				<a class="dropbtn" href="offDay.html">Off Day</a>
+				<div class="dropdown-content">
+					<a href="offDay.html#abs" onclick="navigateToSection('#abs')">Abdominals</a>
+					<a href="offDay.html#cardio" onclick="navigateToSection('#cardio')">Cardio System</a>
+				</div>
+			</div></li>    
+		</ul>
+	</nav>
+
+	<br><h1>Targeted Fitness</h1><br>
+	<p class="about"><b>Ready to begin your fitness journey?</b>
+		<br>This website will effectively lead you through the PPL workout split. 
+		<br>The PPL workout split stands for Push, Pull, Legs, and is one of the most common workout splits.
+		<br>To learn how to effectively complete each day click on one of the workout days below!</p>
+
+	<div class="left column">
+		<a href="pushDay.html"> <img src="Images/push.png" alt="Push Day Page"> </a>
+		<br>
+		<a href="pullDay.html"> <img src="Images/pull.png" alt="Pull Day Page"> </a>
+	</div>
+
+	<div class="right column">
+		<a href="legDay.html"> <img src="Images/Legs.png" alt="Leg Day Page"> </a>
+		<br>
+		<a href="offDay.html"> <img src="Images/offDay.png" alt="Off Day Page"> </a>
+	</div>
+	<br>
+	<footer class="mid column">
+		<p class="about">“A warrior is a guy that goes, I’m here again today. I’ll be here again tomorrow and the next day. It’s a person who puts no limit on what’s possible.” - David Goggins</p>
+	</footer>
+</body>
+</html>

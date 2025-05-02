@@ -25,9 +25,12 @@ function validateSignupForm() {
         }
 
         // If validation passes, submit the form
-        alert("Account created successfully! You will receive your Mount Table ID via email.");
-
-        // In production, this would submit to server
+        let id = "0000001";
+        alert(`Account created successfully! Your ID number is: ${id}`);
+        
+        // Redirect test
+        window.location.href = "login.html";
+        // In production, submit to server
         // form.submit();
     });
 }
@@ -49,10 +52,10 @@ function validateFoodRequestForm() {
             return;
         }
 
-        // In production, you would send the selected items to the server
+        // Note to self, possibly make a page between confirmation, to show 'cart'
         alert("Your request has been submitted successfully! You can pick up your items from the Mount Table tomorrow.");
 
-        // Then you would redirect to a confirmation page
+        // redirect to a confirmation page
         // window.location.href = "confirmation.html";
     });
 }

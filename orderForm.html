@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="CSS/mobileStyle.css" media="screen and (max-width:480px)">
 	<script src="JS/script.js"></script>
     <title>Mount Table - Request Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <!-- Navigation Menu -->
@@ -36,10 +37,46 @@
         <div class="user-info">
             <h3>Welcome, Thomas!</h3>
             <p>Student ID: 0000001</p>
-            <p>You can select one item from each category based on availability.</p>
+            <p>Please select your items below. Depictions may or may not represent actual product.</p>
         </div>
 
         <form id="foodRequestForm">
+            <div class="form-group">
+                <label>I have access to:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="appliances" value="stoveTop"> Stove Top
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="appliances" value="oven"> Oven
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="appliances" value="cicrowave"> Microwave
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="appliances" value="canOpener"> Can Opener
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="appliances" value="runningWater"> Running Water
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="appliances" value="coffeeMaker"> Coffee Maker
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="food-category">
                 <h2>Soup</h2>
                 <div class="item-grid">

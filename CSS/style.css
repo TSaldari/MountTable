@@ -2,6 +2,7 @@
 
 :root {
     --mount-navy: #00205B;
+    --mount-gold: #DFD1A7;
     --light-text: #ffffff;
     --dark-text: #333333;
     --highlight: #e6f0ff;
@@ -73,6 +74,9 @@ nav {
     font-weight: bold;
     color: white;
     text-decoration: none;
+    border-style: hidden hidden solid hidden;
+    border-width: 4px;
+    border-color: var(--mount-gold);
 }
 
 .nav-menu {
@@ -91,7 +95,9 @@ nav {
     text-decoration: none;
     padding: 8px 12px;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    border-style: hidden hidden solid hidden;
+    border-width: 4px;
+    border-color: var(--mount-gold);
 }
 
 .nav-menu a:hover {
@@ -153,6 +159,15 @@ select {
     font-size: 16px;
 }
 
+input{
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
 .form-row {
     display: flex;
     gap: 20px;
@@ -168,12 +183,15 @@ select {
 
 .checkbox-item {
     margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
 }
 
 .checkbox-item label {
     font-weight: normal;
-    display: flex;
+    display: inline-flex;
     align-items: center;
+
 }
 
 .checkbox-item input {
@@ -280,7 +298,6 @@ button:hover, .button:hover {
     font-style: italic;
 }
 
-/* User Info Box */
 .user-info {
     background-color: var(--highlight);
     padding: 15px;
@@ -289,29 +306,43 @@ button:hover, .button:hover {
     color: var(--dark-text);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        margin: 15px;
-        padding: 20px;
-    }
-    
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .nav-container {
-        flex-direction: column;
-    }
-    
-    .nav-menu {
-        margin-top: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .nav-menu li {
-        margin: 5px;
-    }
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 1em;
+    gap: 20px; 
 }
+
+.login-button {
+    min-width: 120px;
+    text-align: center;
+}
+
+footer {
+    background-color: var(--light-text);
+    padding: 1.5em 0;
+    bottom: 0;
+    position:fixed;
+    width: 100%;
+  }
+  
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
+  }
+  
+  .footer-link {
+    color: #555;
+    margin: 0 1em;
+  }
+  
+  .footer-link:hover {
+    color: var(--mount-navy);
+  }
+  
+  .copyright {
+    text-align: center;
+    color: var(--mount-navy);
+  }

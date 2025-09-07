@@ -5,7 +5,7 @@ function validateSignupForm() {
     const form = document.getElementById("signupForm");
     if (!form) return;
 
-    form.addEventListener("submit", function(event) {
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
 
         // Validate password match
@@ -27,7 +27,7 @@ function validateSignupForm() {
         // If validation passes, submit the form
         let id = "0000001";
         alert(`Account created successfully! Your ID number is: ${id}`);
-        
+
         // Redirect test
         window.location.href = "login.html";
         // In production, submit to server
@@ -40,7 +40,7 @@ function validateFoodRequestForm() {
     const form = document.getElementById("foodRequestForm");
     if (!form) return;
 
-    form.addEventListener("submit", function(event) {
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
 
         // Get all selected items
@@ -65,7 +65,7 @@ function validateLoginForm() {
     const form = document.getElementById("loginForm");
     if (!form) return;
 
-    form.addEventListener("submit", function(event) {
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
 
         const studentId = document.getElementById("studentId").value;
@@ -80,16 +80,16 @@ function validateLoginForm() {
         alert("Login successful!");
 
         // Redirect test
-        window.location.href = "orderForm.html";
+        window.location.href = orderFormURL;
     });
 }
 
-// Forgot ID form validation
+// Forgot ID form validation -- was removed, may add back later
 function validateForgotIdForm() {
     const form = document.getElementById("forgotIdForm");
     if (!form) return;
 
-    form.addEventListener("submit", function(event) {
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
 
         const firstName = document.getElementById("firstName").value;
@@ -116,13 +116,13 @@ function setupMobileNav() {
 
     if (!menuToggle || !navMenu) return;
 
-    menuToggle.addEventListener("click", function() {
+    menuToggle.addEventListener("click", function () {
         navMenu.classList.toggle("show");
     });
 }
 
 // Automatically initialize all scripts when DOM is ready
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     validateSignupForm();
     validateFoodRequestForm();
     validateLoginForm();

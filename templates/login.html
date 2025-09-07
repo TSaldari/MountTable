@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" type="text/css" href="CSS/style.css" media="screen and (min-width:481px)">
-	<link rel="stylesheet" type="text/css" href="CSS/mobileStyle.css" media="screen and (max-width:480px)">
-	<script src="JS/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}"
+        media="screen and (min-width:481px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/mobileStyle.css') }}"
+        media="screen and (max-width:480px)">
+    <script> const orderFormURL = "{{ url_for('order_form') }}"; </script>
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
     <title>Mount Table - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <body>
     <!-- Navigation Menu -->
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo">Mount Table</a>
+            <a href="{{ url_for('index') }}" class="logo">Mount Table</a>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Sign Up</a></li>
-                <li><a href="forgot-id.html">Forgot ID</a></li>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Sign Up</a></li>
+                <li><a href="#">Forgot ID</a></li>
                 <li class="dropdown">
                     <a href="#">More</a>
                     <div class="dropdown-content">
-                        <a href="about.html">About Us</a>
-                        <a href="contact.html">Contact</a>
-                        <a href="faq.html">FAQ</a>
+                        <a href="#">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">FAQ</a>
                     </div>
                 </li>
             </ul>
@@ -47,13 +52,13 @@
             </div>
 
             <button type="submit">Log In</button>
-            
+
             <div style="text-align: center; margin-top: 20px;">
-                <a href="forgot-id.html">Forgot your ID?</a> | 
-                <a href="register.html">Need an account?</a>
+                <a href="#">Forgot your ID?</a> |
+                <a href="{{ url_for('register') }}">Need an account?</a>
             </div>
         </form>
     </div>
 </body>
+
 </html>
-    

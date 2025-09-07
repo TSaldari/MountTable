@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" type="text/css" href="CSS/style.css" media="screen and (min-width:481px)">
-	<link rel="stylesheet" type="text/css" href="CSS/mobileStyle.css" media="screen and (max-width:480px)">
-	<script src="JS/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}"
+        media="screen and (min-width:481px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/mobileStyle.css') }}"
+        media="screen and (max-width:480px)">
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
     <title>Mount Table - Request Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <body>
     <!-- Navigation Menu -->
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo">Mount Table</a>
+            <a href="{{ url_for('index') }}" class="logo">Mount Table</a>
             <ul class="nav-menu" id="navMenu">
                 <!-- Student Area Navigation -->
                 <li><a href="dashboard.html">Dashboard</a></li>
@@ -22,7 +26,7 @@
                     <a href="#">Account</a>
                     <div class="dropdown-content">
                         <a href="account-settings.html">Settings</a>
-                        <a href="index.html">Log Out</a>
+                        <a href="{{ url_for('index') }}">Log Out</a>
                     </div>
                 </li>
             </ul>
@@ -81,49 +85,49 @@
                 <h2>Soup</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/chickenSoup.png" alt="Chicken Soup" class="item-image">
+                        <img src="static/Images/chickenSoup.png" alt="Chicken Soup" class="item-image">
                         <div class="item-name">Chicken Soup</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chickenSoup"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/tomatoSoup.png" alt="Tomato Soup" class="item-image">
+                        <img src="static/Images/tomatoSoup.png" alt="Tomato Soup" class="item-image">
                         <div class="item-name">Tomato Soup</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="tomatoSoup"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/vegetableSoup.png" alt="Vegetable Soup" class="item-image">
+                        <img src="static/Images/vegetableSoup.png" alt="Vegetable Soup" class="item-image">
                         <div class="item-name">Vegetable Soup</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="vegetableSoup"> Select
                         </label>
                     </div>
                     <div class="food-item disabled" data-reason="Out of Stock">
-                        <img src="Images/vegetarianSoup.png" alt="Vegetarian Soup" class="item-image">
+                        <img src="static/Images/vegetarianSoup.png" alt="Vegetarian Soup" class="item-image">
                         <div class="item-name">Vegetarian Soup</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="vegetarianSoup" disabled> Select
                         </label>
                     </div>
                     <div class="food-item disabled" data-reason="Out of Stock">
-                        <img src="Images/beefStew.png" alt="Beef Stew" class="item-image">
+                        <img src="static/Images/beefStew.png" alt="Beef Stew" class="item-image">
                         <div class="item-name">Beef Stew</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="beefStew" disabled> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/chili.jpg" alt="Chili" class="item-image">
+                        <img src="static/Images/chili.jpg" alt="Chili" class="item-image">
                         <div class="item-name">Chili</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chili"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/cream.jpg" alt="Cream" class="item-image">
+                        <img src="static/Images/cream.jpg" alt="Cream" class="item-image">
                         <div class="item-name">Cream (for recipes)</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="cream"> Select
@@ -136,21 +140,21 @@
                 <h2>Broth/Boullion</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/chickenBroth.png" alt="Chicken Broth" class="item-image">
+                        <img src="static/Images/chickenBroth.png" alt="Chicken Broth" class="item-image">
                         <div class="item-name">Chicken Broth</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chickenBroth"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/beefBroth.webp" alt="Beef Broth" class="item-image">
+                        <img src="static/Images/beefBroth.webp" alt="Beef Broth" class="item-image">
                         <div class="item-name">Beef Broth</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="beefBroth"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/vegetableBroth.png" alt="Vegetable Broth" class="item-image">
+                        <img src="static/Images/vegetableBroth.png" alt="Vegetable Broth" class="item-image">
                         <div class="item-name">Vegetable Broth</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="vegetableBroth"> Select
@@ -158,19 +162,19 @@
                     </div>
                 </div>
             </div>
-                  
+
             <div class="food-category">
                 <h2>Ramen</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/ramenChicken.png" alt="Chicken Ramen" class="item-image">
+                        <img src="static/Images/ramenChicken.png" alt="Chicken Ramen" class="item-image">
                         <div class="item-name">Chicken Ramen</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chickenRamen"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/beefRamen.png" alt="Beef Ramen" class="item-image">
+                        <img src="static/Images/beefRamen.png" alt="Beef Ramen" class="item-image">
                         <div class="item-name">Beef Ramen</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="beefRamen"> Select
@@ -183,35 +187,35 @@
                 <h2>Canned Meat/Fish</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/chicken.png" alt="Chicken" class="item-image">
+                        <img src="static/Images/chicken.png" alt="Chicken" class="item-image">
                         <div class="item-name">Chicken</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chicken"> Select
                         </label>
                     </div>
                     <div class="food-item disabled" data-reason="Seafood Allergy">
-                        <img src="Images/tuna.png" alt="Tuna" class="item-image">
+                        <img src="static/Images/tuna.png" alt="Tuna" class="item-image">
                         <div class="item-name">Tuna</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="tuna" disabled> Select
                         </label>
                     </div>
                     <div class="food-item disabled" data-reason="Seafood Allergy">
-                        <img src="Images/sardines.png" alt="Sardines" class="item-image">
+                        <img src="static/Images/sardines.png" alt="Sardines" class="item-image">
                         <div class="item-name">Sardines</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="sardines" disabled> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/spam.jpg" alt="Spam" class="item-image">
+                        <img src="static/Images/spam.jpg" alt="Spam" class="item-image">
                         <div class="item-name">Spam</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="spam"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/vienna.png" alt="Vienna" class="item-image">
+                        <img src="static/Images/vienna.png" alt="Vienna" class="item-image">
                         <div class="item-name">Vienna</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="vienna"> Select
@@ -224,49 +228,49 @@
                 <h2>Cereal/Breakfast</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/cereal.png" alt="Cereal" class="item-image">
+                        <img src="static/Images/cereal.png" alt="Cereal" class="item-image">
                         <div class="item-name">Cereal</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="cereal"> Select
                         </label>
                     </div>
                     <div class="food-item disabled" data-reason="Gluten Allergy">
-                        <img src="Images/oatmeal.png" alt="Oatmeal" class="item-image">
+                        <img src="static/Images/oatmeal.png" alt="Oatmeal" class="item-image">
                         <div class="item-name">Oatmeal</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="oatmeal" disabled> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/popTarts.png" alt="Pop Tarts" class="item-image">
+                        <img src="static/Images/popTarts.png" alt="Pop Tarts" class="item-image">
                         <div class="item-name">Pop Tarts</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="popTarts"> Select
                         </label>
                     </div>
                     <div class="food-item disabled" data-reason="Peanut Allergy">
-                        <img src="Images/nutButter.png" alt="Nut Butter" class="item-image">
+                        <img src="static/Images/nutButter.png" alt="Nut Butter" class="item-image">
                         <div class="item-name">Nut Butter</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="nutButter" disabled> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/jelly.webp" alt="Jelly" class="item-image">
+                        <img src="static/Images/jelly.webp" alt="Jelly" class="item-image">
                         <div class="item-name">Jelly</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="jelly"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/appleButter.webp" alt="Apple Butter" class="item-image">
+                        <img src="static/Images/appleButter.webp" alt="Apple Butter" class="item-image">
                         <div class="item-name">Apple Butter</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="appleButter"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/milk.webp" alt="Boxed Milk" class="item-image">
+                        <img src="static/Images/milk.webp" alt="Boxed Milk" class="item-image">
                         <div class="item-name">Boxed Milk</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="boxedMilk"> Select
@@ -279,56 +283,56 @@
                 <h2>Canned Vegetables</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/greenBeans.webp" alt="Green Beans" class="item-image">
+                        <img src="static/Images/greenBeans.webp" alt="Green Beans" class="item-image">
                         <div class="item-name">Green Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="greenBeans"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/peas.jpg" alt="Peas" class="item-image">
+                        <img src="static/Images/peas.jpg" alt="Peas" class="item-image">
                         <div class="item-name">Peas</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="peas"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/corn.png" alt="Corn" class="item-image">
+                        <img src="static/Images/corn.png" alt="Corn" class="item-image">
                         <div class="item-name">Corn</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="corn"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/dicedTomatoes.webp" alt="Diced Tomatoes" class="item-image">
+                        <img src="static/Images/dicedTomatoes.webp" alt="Diced Tomatoes" class="item-image">
                         <div class="item-name">Diced Tomatoes</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="dicedTomatoes"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/carrots.webp" alt="Carrots" class="item-image">
+                        <img src="static/Images/carrots.webp" alt="Carrots" class="item-image">
                         <div class="item-name">Carrots</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="carrots"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/greens.png" alt="Greens" class="item-image">
+                        <img src="static/Images/greens.png" alt="Greens" class="item-image">
                         <div class="item-name">Greens</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="greens"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/beets.webp" alt="Beets" class="item-image">
+                        <img src="static/Images/beets.webp" alt="Beets" class="item-image">
                         <div class="item-name">Beets</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="beets"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/blackOlives.png" alt="Black Olives" class="item-image">
+                        <img src="static/Images/blackOlives.png" alt="Black Olives" class="item-image">
                         <div class="item-name">Black Olives</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="blackOlives"> Select
@@ -341,49 +345,49 @@
                 <h2>Beans</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/blackBeans.png" alt="Black Beans" class="item-image">
+                        <img src="static/Images/blackBeans.png" alt="Black Beans" class="item-image">
                         <div class="item-name">Black Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="blackBeans"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/kidneyBeans.webp" alt="Kidney Beans" class="item-image">
+                        <img src="static/Images/kidneyBeans.webp" alt="Kidney Beans" class="item-image">
                         <div class="item-name">Kidney Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="kidneyBeans"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/whiteBeans.png" alt="White Beans" class="item-image">
+                        <img src="static/Images/whiteBeans.png" alt="White Beans" class="item-image">
                         <div class="item-name">White Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="whiteBeans"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/chickpeas.png" alt="Chickpeas" class="item-image">
+                        <img src="static/Images/chickpeas.png" alt="Chickpeas" class="item-image">
                         <div class="item-name">Chickpeas</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chickpeas"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/pintoBeans.png" alt="Pinto Beans" class="item-image">
+                        <img src="static/Images/pintoBeans.png" alt="Pinto Beans" class="item-image">
                         <div class="item-name">Pinto Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="pintoBeans"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/refriedBeans.webp" alt="Refried Beans" class="item-image">
+                        <img src="static/Images/refriedBeans.webp" alt="Refried Beans" class="item-image">
                         <div class="item-name">Refried Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="refriedBeans"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/bakedBeans.png" alt="Baked Beans" class="item-image">
+                        <img src="static/Images/bakedBeans.png" alt="Baked Beans" class="item-image">
                         <div class="item-name">Baked Beans</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="bakedBeans"> Select
@@ -396,35 +400,35 @@
                 <h2>Sauces/Condiments</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/ketchup.png" alt="Ketchup" class="item-image">
+                        <img src="static/Images/ketchup.png" alt="Ketchup" class="item-image">
                         <div class="item-name">Ketchup</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="ketchup"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/tomatoSauce.webp" alt="Tomato Sauce" class="item-image">
+                        <img src="static/Images/tomatoSauce.webp" alt="Tomato Sauce" class="item-image">
                         <div class="item-name">Tomato Sauce</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="tomatoSauce"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/salsa.png" alt="Salsa" class="item-image">
+                        <img src="static/Images/salsa.png" alt="Salsa" class="item-image">
                         <div class="item-name">Salsa</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="salsa"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/alfredoSauce.webp" alt="Alfredo Sauce" class="item-image">
+                        <img src="static/Images/alfredoSauce.webp" alt="Alfredo Sauce" class="item-image">
                         <div class="item-name">Alfredo Sauce</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="alfredoSauce"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/saladDressing.png" alt="Salad Dressing" class="item-image">
+                        <img src="static/Images/saladDressing.png" alt="Salad Dressing" class="item-image">
                         <div class="item-name">Salad Dressing</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="saladDressing"> Select
@@ -437,14 +441,14 @@
                 <h2>Other</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/cranSauce.webp" alt="Cran Sauce" class="item-image">
+                        <img src="static/Images/cranSauce.webp" alt="Cran Sauce" class="item-image">
                         <div class="item-name">Cran Sauce</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="cranSauce"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/pumpkin.jpg" alt="Pumpkin" class="item-image">
+                        <img src="static/Images/pumpkin.jpg" alt="Pumpkin" class="item-image">
                         <div class="item-name">Pumpkin</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="pumpkin"> Select
@@ -457,49 +461,49 @@
                 <h2>Snacks</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/granolaBars.png" alt="Granola Bars" class="item-image">
+                        <img src="static/Images/granolaBars.png" alt="Granola Bars" class="item-image">
                         <div class="item-name">Granola Bars</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="granolaBars"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/cracker.png" alt="Crackers" class="item-image">
+                        <img src="static/Images/cracker.png" alt="Crackers" class="item-image">
                         <div class="item-name">Crackers</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="crackers"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/chips.png" alt="Chips" class="item-image">
+                        <img src="static/Images/chips.png" alt="Chips" class="item-image">
                         <div class="item-name">Chips</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="chips"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/pretzels.png" alt="Pretzels" class="item-image">
+                        <img src="static/Images/pretzels.png" alt="Pretzels" class="item-image">
                         <div class="item-name">Pretzels</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="pretzels"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/popcorn.jpg" alt="Microwave Popcorn" class="item-image">
+                        <img src="static/Images/popcorn.jpg" alt="Microwave Popcorn" class="item-image">
                         <div class="item-name">Microwave Popcorn</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="popcorn"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/fruit.png" alt="Fruit Cups" class="item-image">
+                        <img src="static/Images/fruit.png" alt="Fruit Cups" class="item-image">
                         <div class="item-name">Fruit Cups</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="fruitCups"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/applesauce.png" alt="Applesauce" class="item-image">
+                        <img src="static/Images/applesauce.png" alt="Applesauce" class="item-image">
                         <div class="item-name">Applesauce</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="applesauce"> Select
@@ -512,42 +516,42 @@
                 <h2>Pasta</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/dryPasta.jpg" alt="Dry Pasta" class="item-image">
+                        <img src="static/Images/dryPasta.jpg" alt="Dry Pasta" class="item-image">
                         <div class="item-name">Dry Pasta</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="dryPasta"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/meatPasta.webp" alt="Canned Meat Pasta" class="item-image">
+                        <img src="static/Images/meatPasta.webp" alt="Canned Meat Pasta" class="item-image">
                         <div class="item-name">Canned Meat Pasta</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="meatPasta"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/vegPasta.webp" alt="Canned Veg Pasta" class="item-image">
+                        <img src="static/Images/vegPasta.webp" alt="Canned Veg Pasta" class="item-image">
                         <div class="item-name">Canned Veg Pasta</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="vegPasta"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/macaroni.png" alt="Macaroni & Cheese" class="item-image">
+                        <img src="static/Images/macaroni.png" alt="Macaroni & Cheese" class="item-image">
                         <div class="item-name">Macaroni & Cheese</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="macaroni"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/eggNoodle.webp" alt="Egg Noodles" class="item-image">
+                        <img src="static/Images/eggNoodle.webp" alt="Egg Noodles" class="item-image">
                         <div class="item-name">Egg Noodles</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="eggNoodles"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/flavPasta.png" alt="Flavored Noodle Side" class="item-image">
+                        <img src="static/Images/flavPasta.png" alt="Flavored Noodle Side" class="item-image">
                         <div class="item-name">Flav. Noodle Side</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="flavNoodle"> Select
@@ -560,42 +564,42 @@
                 <h2>Rice/Potatoes</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/whiteRice.webp" alt="White Rice" class="item-image">
+                        <img src="static/Images/whiteRice.webp" alt="White Rice" class="item-image">
                         <div class="item-name">White Rice</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="whiteRice"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/brownRice.png" alt="Brown Rice" class="item-image">
+                        <img src="static/Images/brownRice.png" alt="Brown Rice" class="item-image">
                         <div class="item-name">Brown Rice</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="brownRice"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/flavRice.png" alt="Flavored Rice Side" class="item-image">
+                        <img src="static/Images/flavRice.png" alt="Flavored Rice Side" class="item-image">
                         <div class="item-name">Flav. Rice Side</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="flavRice"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/cannedPotatoes.png" alt="Canned Potatoes" class="item-image">
+                        <img src="static/Images/cannedPotatoes.png" alt="Canned Potatoes" class="item-image">
                         <div class="item-name">Canned Potatoes</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="cannedPotatoes"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/instantPotatoes.webp" alt="Instant Potatoes" class="item-image">
+                        <img src="static/Images/instantPotatoes.webp" alt="Instant Potatoes" class="item-image">
                         <div class="item-name">Instant Potatoes</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="instantPotatoes"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/quinoa.png" alt="Quinoa" class="item-image">
+                        <img src="static/Images/quinoa.png" alt="Quinoa" class="item-image">
                         <div class="item-name">Quinoa</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="quinoa"> Select
@@ -608,42 +612,42 @@
                 <h2>Drinks</h2>
                 <div class="item-grid">
                     <div class="food-item">
-                        <img src="Images/groundCoffee.webp" alt="Ground Coffee" class="item-image">
+                        <img src="static/Images/groundCoffee.webp" alt="Ground Coffee" class="item-image">
                         <div class="item-name">Ground Coffee</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="groundCoffee"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/blackTea.jpg" alt="Black Tea" class="item-image">
+                        <img src="static/Images/blackTea.jpg" alt="Black Tea" class="item-image">
                         <div class="item-name">Black Tea</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="blackTea"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/herbalTea.jpg" alt="Herbal Tea" class="item-image">
+                        <img src="static/Images/herbalTea.jpg" alt="Herbal Tea" class="item-image">
                         <div class="item-name">Herbal Tea</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="herbalTea"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/icedTea.png" alt="Iced Tea" class="item-image">
+                        <img src="static/Images/icedTea.png" alt="Iced Tea" class="item-image">
                         <div class="item-name">Iced Tea</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="icedTea"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/drinkSticks.png" alt="Drink Sticks" class="item-image">
+                        <img src="static/Images/drinkSticks.png" alt="Drink Sticks" class="item-image">
                         <div class="item-name">Drink Sticks</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="drinkSticks"> Select
                         </label>
                     </div>
                     <div class="food-item">
-                        <img src="Images/fruitJuice.webp" alt="Fruit Juice" class="item-image">
+                        <img src="static/Images/fruitJuice.webp" alt="Fruit Juice" class="item-image">
                         <div class="item-name">Fruit Juice</div>
                         <label class="checkbox-label">
                             <input type="checkbox" name="items" value="fruitJuice"> Select
@@ -652,10 +656,12 @@
                 </div>
             </div>
 
-            <p class="note">Note: You may select one item from each category. Items that are grayed out are either unavailable or not suitable based on your dietary restrictions.</p>
+            <p class="note">Note: You may select one item from each category. Items that are grayed out are either
+                unavailable or not suitable based on your dietary restrictions.</p>
 
             <button type="submit">Submit Request</button>
         </form>
     </div>
 </body>
+
 </html>

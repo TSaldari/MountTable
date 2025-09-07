@@ -17,19 +17,23 @@ CREATE TABLE FoodInventory (
     item_name VARCHAR(100) NOT NULL,
     category VARCHAR(50),
     quantity INT DEFAULT 0,
-    unit VARCHAR(20), -- e.g. "kg", "packs", "cans"
-    expiration_date DATE,
+    weight VARCHAR(20), -- "lbs"
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Table for request forms
-CREATE TABLE Requests (
+CREATE TABLE requests (
     request_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    item_id INT NOT NULL,
-    quantity_requested INT NOT NULL,
-    status ENUM('pending', 'approved', 'denied') DEFAULT 'pending',
+    student_id VARCHAR(10) NOT NULL,
     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Logins(user_id),
+    status ENUM('pending', 'approved', 'denied') DEFAULT 'pending'
+);
+
+-- Table for individual items
+CREATE TABLE request_items (
+    request_id INT NOT NULL,
+    item_id INT NOT NULL,
+    PRIMARY KEY (request_id, item_id),
+    FOREIGN KEY (request_id) REFERENCES requests(request_id),
     FOREIGN KEY (item_id) REFERENCES FoodInventory(item_id)
 );

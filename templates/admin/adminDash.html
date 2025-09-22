@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}"
+        media="screen and (min-width:481px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/mobileStyle.css') }}"
+        media="screen and (max-width:480px)">
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mount Table - Admin Dashboard</title>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">Mount Table</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Sign Up</a></li>
+                <li><a href="#">Forgot ID</a></li>
+                <li class="dropdown">
+                    <a href="#">More</a>
+                    <div class="dropdown-content">
+                        <a href="#">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">FAQ</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Welcome to Mount Table</h1>
+        </header>
+
+        <div>
+            <div class="center-container">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mount Table Logo">
+            </div>
+
+            <!-- Simple Welcome Message -->
+            <div class="center-container">
+                <p>The Mount's free food resource is here to help you!</p>
+            </div>
+
+            <!-- Large Login Button -->
+            <div class="center-container">
+                <a href="{{ url_for('login') }}" class="button login-button">Login</a>
+                <a href="{{ url_for('register') }}" class="button login-button">Sign Up</a>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Admin Login</a>
+            <a href="#" class="footer-link">Contact Us</a>
+        </div>
+        <div class="copyright">
+            © 2025 Mount Table. All rights reserved.
+        </div>
+    </footer>
+</body>
+
+</html>

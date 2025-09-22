@@ -149,8 +149,8 @@ label {
     font-weight: bold;
 }
 
-input[type="text"], 
-input[type="email"], 
+input[type="text"],
+input[type="email"],
 input[type="password"],
 input[type="tel"],
 select {
@@ -162,7 +162,7 @@ select {
     font-size: 16px;
 }
 
-input{
+input {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--medium-gray);
@@ -204,7 +204,8 @@ input{
     height: 12px;
 }
 
-button, .button {
+button,
+.button {
     background-color: var(--mount-navy);
     color: white;
     border: none;
@@ -217,7 +218,8 @@ button, .button {
     display: inline-block;
 }
 
-button:hover, .button:hover {
+button:hover,
+.button:hover {
     background-color: #001845;
 }
 
@@ -317,7 +319,7 @@ button:hover, .button:hover {
     justify-content: center;
     align-items: center;
     margin: 0 1em;
-    gap: 20px; 
+    gap: 20px;
 }
 
 .login-button {
@@ -329,26 +331,52 @@ footer {
     background-color: var(--light-text);
     padding: 1.5em 0;
     bottom: 0;
-    position:fixed;
+    position: fixed;
     width: 100%;
-  }
-  
-  .footer-links {
+}
+
+.footer-links {
     display: flex;
     justify-content: center;
     margin-bottom: 1em;
-  }
-  
-  .footer-link {
+}
+
+.footer-link {
     color: #555;
     margin: 0 1em;
-  }
-  
-  .footer-link:hover {
+}
+
+.footer-link:hover {
     color: var(--mount-navy);
-  }
-  
-  .copyright {
+}
+
+.copyright {
     text-align: center;
     color: var(--mount-navy);
-  }
+}
+
+.flash {
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Example categories */
+.flash.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.flash.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}

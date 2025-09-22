@@ -66,21 +66,13 @@ function validateLoginForm() {
     if (!form) return;
 
     form.addEventListener("submit", function (event) {
-        event.preventDefault();
-
         const studentId = document.getElementById("studentId").value;
         const password = document.getElementById("password").value;
 
         if (!studentId || !password) {
+            event.preventDefault();
             alert("Please enter both your Student ID and Password.");
-            return;
         }
-
-        // Auto accept anything right now
-        alert("Login successful!");
-
-        // Redirect test
-        window.location.href = orderFormURL;
     });
 }
 

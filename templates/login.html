@@ -39,7 +39,20 @@
             <h1>Mount Table Student Login</h1>
         </header>
 
-        <form id="loginForm">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form id="loginForm" method="POST" action="{{ url_for('login') }}">
             <div class="form-group">
                 <label for="studentId">ID Number <span class="required">*</span></label>
                 <input type="text" id="studentId" name="studentId" required>

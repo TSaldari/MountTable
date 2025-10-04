@@ -38,7 +38,7 @@
             <h1>Mount Table Sign Up Form</h1>
         </header>
 
-        <form id="signupForm">
+        <form id="signupForm" method="POST" action="{{ url_for('register') }}">
             <div class="form-row">
                 <div class="form-group">
                     <label for="firstName">First Name <span class="required">*</span></label>

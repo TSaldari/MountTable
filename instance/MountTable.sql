@@ -4,11 +4,28 @@ USE FoodManagementDB;
 
 -- Table for logins (users)
 CREATE TABLE Logins (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL, --Argon2 or Bcrypt for hashes
-    role ENUM('admin', 'staff', 'student') DEFAULT 'student',
+    user_id VARCHAR(15) PRIMARY KEY,   -- stores MT-########
+    password_hash VARCHAR(255) NOT NULL, -- Argon2 or Bcrypt for hashes
+    role ENUM('admin', 'staff', 'student', 'newUser') DEFAULT 'newUser',
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Alergens reference table
+CREATE TABLE Allergens (
+    allergen_id INT AUTO_INCREMENT PRIMARY KEY,
+    allergen_name VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- User-Allergen join table
+CREATE TABLE UserAllergens (
+    user_id VARCHAR(15) NOT NULL,
+    allergen_id INT NOT NULL,
+    PRIMARY KEY (user_id, allergen_id),
+    FOREIGN KEY (user_id) REFERENCES Logins(user_id),
+    FOREIGN KEY (allergen_id) REFERENCES Allergens(allergen_id)
 );
 
 -- Table for food inventory

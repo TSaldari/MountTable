@@ -6,34 +6,29 @@ function validateSignupForm() {
     if (!form) return;
 
     form.addEventListener("submit", function (event) {
-        event.preventDefault();
 
-        // Validate password match
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
+        const email = document.getElementById("email").value;
 
         if (password !== confirmPassword) {
             alert("Passwords do not match!");
             return;
         }
 
-        // Check email is mount email
-        const email = document.getElementById("email").value;
         if (!email.endsWith("@msmary.edu") && !email.endsWith("@email.msmary.edu")) {
             alert("Please use your Mount St. Mary's University email address.");
             return;
         }
 
-        // If validation passes, submit the form
-        let id = "0000001";
-        alert(`Account created successfully! Your ID number is: ${id}`);
+        // For demo purposes only, remove server-side ID handling
+        alert("Form is valid! Server will create your account and ID.");
 
-        // Redirect test
-        window.location.href = "login.html";
-        // In production, submit to server
-        // form.submit();
+        // Optionally submit to server if you have a Flask route
+        form.submit();
     });
 }
+
 
 // Form validation for food request form
 function validateFoodRequestForm() {

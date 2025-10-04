@@ -7,6 +7,7 @@ import mysql.connector
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from argon2 import PasswordHasher
 from functools import wraps
+import random
 
 app = Flask(__name__)
 app.secret_key = "asdfasdf" 
@@ -49,13 +50,14 @@ def index():
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
-        username = request.form["studentId"]  # from your form
+        user_id = request.form["studentId"]  # from form
         password = request.form["password"]
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT * FROM Logins WHERE username = %s", (username,))
+        cursor.execute("SELECT * FROM Logins WHERE user_id = %s", (user_id,))
+
         user = cursor.fetchone()
         cursor.close()
         conn.close()
@@ -73,9 +75,9 @@ def login():
                 else:
                     return redirect(url_for("order_form"))  
             except:
-                flash("Invalid password!", "danger")
+                flash("Invalid ID or password!", "danger")
         else:
-            flash("User not found!", "danger")
+            flash("Invalid ID or password!", "danger")
 
     return render_template("login.html")
 
@@ -89,8 +91,47 @@ def order_form():
 def adminDash():
     return render_template("admin/adminDash.html")
 
-@app.route("/register")
+def generate_user_id(cursor):
+    while True:
+        user_id = "MT-" + str(random.randint(10000000, 99999999))
+        cursor.execute("SELECT 1 FROM Logins WHERE user_id = %s", (user_id,))
+        if not cursor.fetchone():  # no duplicate found
+            return user_id
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        password = request.form["password"]
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Generate secure Argon2 hash
+        password_hash = ph.hash(password)
+
+        # Generate unique MT-######## ID
+        user_id = generate_user_id(cursor)
+
+        # Insert new user (default role = newUser)
+        first_name = request.form.get("firstName")
+        last_name = request.form.get("lastName")
+        email = request.form.get("email")
+
+        cursor.execute(
+            """
+            INSERT INTO Logins (user_id, password_hash, role, first_name, last_name, email)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (user_id, password_hash, "newUser", first_name, last_name, email)
+        )
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        flash(f"Registration successful! You can now log in with ID: {user_id}.", "success")
+        return redirect(url_for("login"))
+
     return render_template("register.html")
 
 @app.route("/logout")

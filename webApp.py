@@ -1,4 +1,4 @@
-''' Run commands:
+''' Run commands so i dont forget:
 set FLASK_APP=webApp.py
 set FLASK_ENV=development
 python -m flask run
@@ -18,16 +18,16 @@ ph = PasswordHasher()
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
-        user="root",          # change if your MySQL user is different
-        password="Comet1386!",  # your MySQL root/user password
+        user="root",          
+        password="Comet1386!",  # MySQL root/user password
         database="FoodManagementDB"
     )
 
 def login_required(role=None):
-    """
+    '''
     Protect routes so that only logged-in users can access them.
     Optional 'role' parameter restricts access to a specific role.
-    """
+    '''
     def decorator(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
@@ -50,7 +50,7 @@ def index():
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
-        user_id = request.form["studentId"]  # from form
+        user_id = request.form["studentId"]
         password = request.form["password"]
 
         conn = get_db_connection()

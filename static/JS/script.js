@@ -36,7 +36,6 @@ function validateFoodRequestForm() {
     if (!form) return;
 
     form.addEventListener("submit", function (event) {
-        event.preventDefault();
 
         // Get all selected items
         const selectedItems = Array.from(document.querySelectorAll('input[name="items"]:checked'))
@@ -70,6 +69,99 @@ function validateLoginForm() {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Selects all food item check boxes
+    const itemCheckboxes = document.querySelectorAll('#foodRequestForm input[name="items"]');
+    // Selects all dietary restriction check boxes
+    const restrictionCheckboxes = document.querySelectorAll('input[name="dietaryRestrictions"]');
+
+    // Disables an item utilizing CSS class 
+    function disableFoodItem(itemElement, reason) {
+        const foodItemDiv = itemElement.closest('.food-item');
+        if (foodItemDiv) {
+            foodItemDiv.classList.add('disabled'); // adds CSS class
+            foodItemDiv.setAttribute('data-reason', reason); // Sets the reason for disable
+            itemElement.disabled = true; // Disables checkbox
+        }
+    }
+
+    // Enables an item
+    function enableFoodItem(itemElement) {
+        const foodItemDiv = itemElement.closest('.food-item');
+        if (foodItemDiv) {
+            // Only re-enable if not out-of-stock
+            const itemValue = itemElement.value;
+            const isOutOfStock = inventory.hasOwnProperty(itemValue) && inventory[itemValue] <= 0;
+
+            if (!isOutOfStock) {
+                foodItemDiv.classList.remove('disabled'); // Removes CSS class
+                foodItemDiv.removeAttribute('data-reason'); // Removes attribute
+                itemElement.disabled = false;
+            } else {
+                // Ensure out-of-stock items still show the correct reason
+                foodItemDiv.setAttribute('data-reason', 'Out of Stock');
+            }
+        }
+    }
+
+    // Handling allergies
+    function handleAllergyCheck() {
+        // Get all currently active restrictions
+        const activeRestrictions = Array.from(restrictionCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        // Iterate through all food items
+        itemCheckboxes.forEach(checkbox => {
+            const itemValue = checkbox.value;
+            const itemAllergens = ALLERGEN_MAP[itemValue] || []; // Get allergens for this item
+
+            let conflict = false;
+            let conflictReason = 'Allergy';
+
+            // Check for conflict with any active restriction
+            if (activeRestrictions.length > 0) {
+                for (const restriction of activeRestrictions) {
+                    if (itemAllergens.includes(restriction)) {
+                        conflict = true;
+                        // Set the specific reason for better feedback
+                        conflictReason = `Contains ${restriction.charAt(0).toUpperCase() + restriction.slice(1)}`;
+                        break;
+                    }
+                }
+            }
+
+            // Apply or remove the disabled state
+            if (conflict) {
+                disableFoodItem(checkbox, conflictReason);
+            } else {
+                enableFoodItem(checkbox);
+            }
+        });
+    }
+
+    // Event Listeners
+    // Attaches the check function to every restriction checkbox change
+    restrictionCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', handleAllergyCheck);
+    });
+
+    // Initial inventory check 
+    itemCheckboxes.forEach(checkbox => {
+        const itemValue = checkbox.value;
+        if (inventory.hasOwnProperty(itemValue)) {
+            const currentQuantity = inventory[itemValue];
+            if (currentQuantity !== undefined && currentQuantity <= 0) {
+                disableFoodItem(checkbox, 'Out of Stock');
+            }
+        }
+    });
+
+    // Run the allergy check once when the page loads
+    handleAllergyCheck();
+});
 
 // Forgot ID form validation -- was removed, may add back later
 function validateForgotIdForm() {

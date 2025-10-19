@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from argon2 import PasswordHasher
 from functools import wraps
 import random
+import json
 
 app = Flask(__name__)
 app.secret_key = "asdfasdf" 
@@ -81,10 +82,183 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/orderForm")
+@app.route("/orderForm", methods=["GET", "POST"])
 @login_required(role="student")
 def order_form():
-    return render_template("student/orderForm.html")
+
+    # Maps Items to possible allergens
+    ALLERGEN_MAP = {
+        # Item Name: [Allergen Keys matching checkbox values]
+        
+        # Soups
+        "Chicken Soup": ["gluten"],
+        "Tomato Soup": [],
+        "Vegetable Soup": [],
+        "Vegetarian Soup": [],
+        "Beef Stew": ["gluten"],
+        "Chili": [],
+        "Cream": [], 
+        
+        # Broths
+        "Chicken Broth": [],
+        "Beef Broth": [],
+        "Vegetable Broth": [],
+        
+        # Ramen
+        "Chicken Ramen": ["gluten"],
+        "Beef Ramen": ["gluten"],
+        
+        # Canned Meat/Fish
+        "Chicken": [],
+        "Tuna": ["seafood"],
+        "Sardines": ["seafood"],
+        "Spam": [],
+        "Vienna": [],
+        
+        # Cereal/Breakfast
+        "Cereal": ["gluten", "nuts"], 
+        "Oatmeal": [], 
+        "Pop Tarts": ["gluten"],
+        "Nut Butter": ["peanuts", "nuts"], 
+        "Jelly": [],
+        "Apple Butter": [],
+        
+        # Canned Vegetables
+        "Boxed Milk": [],
+        "Green Beans": [],
+        "Peas": [],
+        "Corn": [],
+        "Diced Tomatoes": [],
+        "Carrots": [],
+        "Greens": [],
+        "Beets": [],
+        "Black Olives": [],
+
+        # Beans
+        "Black Beans": [],
+        "Kidney Beans": [],
+        "White Beans": [],
+        "Chickpeas": [],
+        "Pinto Beans": [],
+        "Refried Beans": [],
+        "Baked Beans": [],
+        
+        # Sauces/Condiments
+        "Ketchup": [],
+        "Tomato Sauce": [],
+        "Salsa": [],
+        "Alfredo Sauce": ["gluten"],
+        "Salad Dressing": [],
+
+        # Other
+        "Cran Sauce": [],
+        "Pumpkin": [],
+        
+        # Snacks 
+        "Granola Bars": ["gluten", "nuts"],
+        "Crackers": ["gluten"],
+        "Chips": [],
+        "Pretzels": ["gluten"],
+        "Microwave Popcorn": [],
+        "Fruit Cups": [],
+        "Applesauce": [],
+        
+        # Pasta
+        "Dry Pasta": ["gluten"],
+        "Canned Meat Pasta": ["gluten"],
+        "Canned Veg Pasta": ["gluten"],
+        "Macaroni & Cheese": ["gluten"],
+        "Egg Noodles": ["gluten"],
+        "Flavored Noodle Side": ["gluten"],
+        
+        # Rice/Potatoes
+        "White Rice": [],
+        "Brown Rice": [],
+        "Flavored Rice Side": ["gluten"],
+        "Canned Potatoes": [],
+        "Instant Potatoes": [],
+        "Quinoa": [],
+        
+        # Drinks
+        "Ground Coffee": [],
+        "Black Tea": [],
+        "Herbal Tea": [],
+        "Iced Tea": [],
+        "Drink Sticks": [],
+        "Fruit Juice": []
+    }
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    student_id = session.get("user_id")
+
+    # Getting User Details
+    cursor.execute(
+        "SELECT user_id, first_name, last_name FROM Logins WHERE user_id = %s",
+        (student_id,)
+    )
+    user_info = cursor.fetchone()
+    
+    # Define variables to pass to the template
+    if user_info:
+        first_name = user_info.get('first_name') or ''
+        last_name = user_info.get('last_name') or ''
+        
+        # Normalizes the username
+        user_name = f"{first_name} {last_name}".strip() or "Student"
+        
+        # User ID number
+        display_id = user_info.get('user_id') or student_id 
+    else:
+        # In case of error go to this default
+        user_name = "Guest User"
+        display_id = student_id
+
+    # Get Inventory Data 
+    # Query the database for all item names and their quantity
+    cursor.execute("SELECT item_name, quantity FROM FoodInventory")
+    inventory_results = cursor.fetchall()
+    
+    # Dictionary for items and their quantity
+    inventory_data = {
+        item['item_name']: item['quantity'] 
+        for item in inventory_results
+    }
+    
+    # Close connection after getting this data
+    conn.close()
+
+
+    if request.method == "POST":
+        selected_items = request.form.getlist("items")  # all checked food items
+        student_id = session.get("user_id")
+
+        if not selected_items: # restart page if no items are selected
+            return render_template("student/orderForm.html", inventory_data=json.dumps(inventory_data),user_name=user_name,user_id=display_id,allergen_data=json.dumps(ALLERGEN_MAP))
+        
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Create a new request
+        cursor.execute("INSERT INTO requests (student_id) VALUES (%s)",(student_id,))
+        request_id = cursor.lastrowid  # get the auto-increment ID
+
+        # Link selected items to the request
+        for item_name in selected_items:
+            cursor.execute("SELECT item_id FROM FoodInventory WHERE item_name = %s",(item_name,))
+            result = cursor.fetchone()
+            if result:
+                cursor.execute("INSERT INTO request_items (request_id, item_id) VALUES (%s, %s)",(request_id, result["item_id"]))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for("order_form"))  # redirect to GET view
+
+    # Handle GET request
+    return render_template("student/orderForm.html", inventory_data=json.dumps(inventory_data),user_name=user_name,user_id=display_id,allergen_data=json.dumps(ALLERGEN_MAP))
 
 @app.route("/adminDash")
 @login_required(role="admin")

@@ -7,6 +7,7 @@
         media="screen and (min-width:481px)">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/mobileStyle.css') }}"
         media="screen and (max-width:480px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/adminDash.css') }}">
     <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mount Table - Admin Dashboard</title>
@@ -15,18 +16,16 @@
 <body>
     <nav>
         <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="logo">Mount Table</a>
+            <a href="{{ url_for('adminDash') }}" class="logo">Mount Table Admin</a>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                <li><a href="{{ url_for('register') }}">Sign Up</a></li>
-                <li><a href="#">Forgot ID</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#orders">Orders</a></li>
+                <li><a href="{{ url_for('inventory_management') }}">Inventory</a></li>
+                <li><a href="#users">New Users</a></li>
                 <li class="dropdown">
                     <a href="#">More</a>
                     <div class="dropdown-content">
-                        <a href="#">About Us</a>
-                        <a href="#">Contact</a>
-                        <a href="#">FAQ</a>
+                        <a href="{{ url_for('index') }}">Back to Home</a>
                         <a href="{{ url_for('logout') }}">Logout</a>
                     </div>
                 </li>
@@ -34,35 +33,234 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container container-wide">
         <header>
-            <h1>Welcome to Mount Table</h1>
+            <h1>Admin Dashboard - Mount Table Food Management</h1>
         </header>
 
-        <div>
-            <div class="center-container">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mount Table Logo">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Alert Box -->
+        {% if pending_orders > 0 or new_users > 0 %}
+        <div class="alert-box">
+            <strong>⚠️ Attention:</strong> You have {{ pending_orders }} pending order{% if pending_orders != 1 %}s{%
+            endif %} and {{ new_users }} new user registration{% if new_users != 1 %}s{% endif %} awaiting approval.
+        </div>
+        {% endif %}
+
+        <!-- Quick Action Links -->
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+            <a href="{{ url_for('inventory_management') }}" class="action-card">
+                <div class="action-icon">📦</div>
+                <h3>Update Inventory</h3>
+                <p>Manage food items and stock levels</p>
+            </a>
+            <a href="#users" class="action-card">
+                <div class="action-icon">✅</div>
+                <h3>Complete Registrations</h3>
+                <p>Approve new user accounts</p>
+            </a>
+            <a href="#orders" class="action-card">
+                <div class="action-icon">📋</div>
+                <h3>Accept Orders</h3>
+                <p>Review and approve food requests</p>
+            </a>
+        </div>
+
+        <!-- Key Statistics -->
+        <h2 id="dashboard">Key Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-number">{{ active_users }}</div>
+                <div class="stat-sublabel">Users who made requests</div>
             </div>
-
-            <!-- Simple Welcome Message -->
-            <div class="center-container">
-                <p>The Mount's free food resource is here to help you!</p>
+            <div class="stat-card">
+                <div class="stat-label">Food Per Person</div>
+                <div class="stat-number">{{ food_per_person }}</div>
+                <div class="stat-sublabel">lbs average per user</div>
             </div>
-
-            <!-- Large Login Button -->
-            <div class="center-container">
-                <a href="{{ url_for('login') }}" class="button login-button">Login</a>
-                <a href="{{ url_for('register') }}" class="button login-button">Sign Up</a>
-
+            <div class="stat-card">
+                <div class="stat-label">Monthly Distribution</div>
+                <div class="stat-number">{{ monthly_distribution }}</div>
+                <div class="stat-sublabel">lbs distributed this month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Orders</div>
+                <div class="stat-number">{{ pending_orders }}</div>
+                <div class="stat-sublabel">Awaiting approval</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-number">{{ orders_over_time|sum(attribute='order_count') if orders_over_time else 0
+                    }}</div>
+                <div class="stat-sublabel">Last 6 months</div>
             </div>
         </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-column">
+            <!-- Popular Items -->
+            <div>
+                <h2>Most Popular Items</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Orders</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if popular_items %}
+                        {% for item in popular_items %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ item.category }}</td>
+                            <td>{{ item.order_count }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: #666;">No order data available yet
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Low Stock Items -->
+            <div>
+                <h2>Low Stock Alerts</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if low_stock_items %}
+                        {% for item in low_stock_items %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ item.quantity }} {% if item.weight %}{{ item.weight }}{% else %}units{% endif %}
+                            </td>
+                            <td>
+                                {% if item.stock_status == 'low' %}
+                                <span class="status-badge status-low">Critical</span>
+                                {% elif item.stock_status == 'medium' %}
+                                <span class="status-badge status-medium">Low</span>
+                                {% else %}
+                                <span class="status-badge status-good">Good</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: #666;">All items well stocked</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pending Orders Section -->
+        <h2 id="orders">Pending Orders (Accept Orders)</h2>
+        {% if pending_order_list %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Student ID</th>
+                    <th>Request Date</th>
+                    <th>Items</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in pending_order_list %}
+                <tr>
+                    <td>#{{ order.request_id }}</td>
+                    <td>{{ order.student_id }}</td>
+                    <td>{{ order.request_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ order.item_count }} item{% if order.item_count != 1 %}s{% endif %}</td>
+                    <td><span class="status-badge status-pending">{{ order.status|capitalize }}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('order_details', request_id=order.request_id) }}"
+                                class="button btn-small">Details</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="info-text">No pending orders at this time.</p>
+        {% endif %}
+
+        <!-- New User Registration Section -->
+        <h2 id="users">New User Registrations (Complete Registration)</h2>
+        {% if new_user_list %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                    <th>Current Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in new_user_list %}
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td><span class="status-badge status-pending">{{ user.role }}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <form method="POST" action="{{ url_for('approve_user', user_id=user.user_id) }}"
+                                style="display: inline;">
+                                <button type="submit" class="button btn-small btn-success">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('deny_user', user_id=user.user_id) }}"
+                                style="display: inline;"
+                                onsubmit="return confirm('Are you sure you want to deny this user?');">
+                                <button type="submit" class="button btn-small btn-danger">Deny</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="info-text">No new user registrations awaiting approval.</p>
+        {% endif %}
+
     </div>
 
     <footer>
-        <div class="footer-links">
-            <a href="#" class="footer-link">Admin Login</a>
-            <a href="#" class="footer-link">Contact Us</a>
-        </div>
         <div class="copyright">
             © 2025 Mount Table. All rights reserved.
         </div>

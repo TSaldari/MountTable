@@ -25,10 +25,7 @@ def get_db_connection():
     )
 
 def login_required(role=None):
-    '''
-    Protect routes so that only logged-in users can access them.
-    Optional 'role' parameter restricts access to a specific role.
-    '''
+    #Protect routes so that only logged-in users can access them by role
     def decorator(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
@@ -229,7 +226,7 @@ def order_form():
     # Close connection after getting this data
     conn.close()
 
-
+    # Getting food item selections here and placing into db
     if request.method == "POST":
         selected_items = request.form.getlist("items")  # all checked food items
         student_id = session.get("user_id")
@@ -260,10 +257,7 @@ def order_form():
     # Handle GET request
     return render_template("student/orderForm.html", inventory_data=json.dumps(inventory_data),user_name=user_name,user_id=display_id,allergen_data=json.dumps(ALLERGEN_MAP))
 
-@app.route("/adminDash")
-@login_required(role="admin")
-def adminDash():
-    return render_template("admin/adminDash.html")
+# REMOVED THE DUPLICATE adminDash FUNCTION THAT WAS HERE (lines 280-283)
 
 def generate_user_id(cursor):
     while True:
@@ -314,10 +308,171 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
 
-@app.route("/dashboard")
-@login_required(role="student")
-def student_dashboard():
-    return render_template("students/dashboard.html")
+@app.route("/admin/adminDash")
+@login_required(role="admin")
+def adminDash():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get count of active users (users who have made at least one request)
+    cursor.execute("""
+        SELECT COUNT(DISTINCT student_id) as active_users 
+        FROM requests
+    """)
+    active_users = cursor.fetchone()['active_users']
+    
+    # Get count of pending orders
+    cursor.execute("""
+        SELECT COUNT(*) as pending_orders 
+        FROM requests 
+        WHERE status = 'pending'
+    """)
+    pending_orders = cursor.fetchone()['pending_orders']
+    
+    # Get count of new users awaiting approval
+    cursor.execute("""
+        SELECT COUNT(*) as new_users 
+        FROM Logins 
+        WHERE role = 'newUser'
+    """)
+    new_users = cursor.fetchone()['new_users']
+    
+    # Calculate lbs of food per person
+    cursor.execute("""
+        SELECT 
+            COALESCE(SUM(CAST(REPLACE(fi.weight, 'oz', '') AS DECIMAL(10,2))) / 16.0, 0) / 
+            NULLIF(COUNT(DISTINCT r.student_id), 0) as food_per_person
+        FROM requests r
+        JOIN request_items ri ON r.request_id = ri.request_id
+        JOIN FoodInventory fi ON ri.item_id = fi.item_id
+        WHERE fi.weight LIKE '%oz%' AND r.status = 'approved'
+    """)
+    result = cursor.fetchone()
+    food_per_person = round(result['food_per_person'] if result['food_per_person'] else 0, 1)
+
+    # Calculate monthly distribution
+    cursor.execute("""
+        SELECT 
+            COALESCE(SUM(CAST(REPLACE(fi.weight, 'oz', '') AS DECIMAL(10,2))) / 16.0, 0) as monthly_lbs
+        FROM requests r
+        JOIN request_items ri ON r.request_id = ri.request_id
+        JOIN FoodInventory fi ON ri.item_id = fi.item_id
+        WHERE fi.weight LIKE '%oz%' 
+        AND r.status = 'approved'
+        AND MONTH(r.request_date) = MONTH(CURRENT_DATE())
+        AND YEAR(r.request_date) = YEAR(CURRENT_DATE())
+    """)
+    result = cursor.fetchone()
+    monthly_distribution = int(result['monthly_lbs'] if result['monthly_lbs'] else 0)
+        
+    # Get most popular items (top 5)
+    cursor.execute("""
+        SELECT 
+            fi.item_name,
+            fi.category,
+            COUNT(*) as order_count
+        FROM request_items ri
+        JOIN FoodInventory fi ON ri.item_id = fi.item_id
+        GROUP BY fi.item_id, fi.item_name, fi.category
+        ORDER BY order_count DESC
+        LIMIT 5
+    """)
+    popular_items = cursor.fetchall()
+    
+    # Get low stock items (quantity < 30 as threshold)
+    cursor.execute("""
+        SELECT 
+            item_name,
+            quantity,
+            weight,
+            CASE 
+                WHEN quantity < 15 THEN 'low'
+                WHEN quantity < 30 THEN 'medium'
+                ELSE 'good'
+            END as stock_status
+        FROM FoodInventory
+        WHERE quantity < 50
+        ORDER BY quantity ASC
+        LIMIT 5
+    """)
+    low_stock_items = cursor.fetchall()
+    
+    # Get pending orders with details
+    cursor.execute("""
+        SELECT 
+            r.request_id,
+            r.student_id,
+            r.request_date,
+            r.status,
+            COUNT(ri.item_id) as item_count
+        FROM requests r
+        LEFT JOIN request_items ri ON r.request_id = ri.request_id
+        WHERE r.status = 'pending'
+        GROUP BY r.request_id, r.student_id, r.request_date, r.status
+        ORDER BY r.request_date DESC
+        LIMIT 10
+    """)
+    pending_order_list = cursor.fetchall()
+    
+    # Get inventory items for management table
+    cursor.execute("""
+        SELECT 
+            item_id,
+            item_name,
+            category,
+            quantity,
+            weight,
+            last_updated
+        FROM FoodInventory
+        ORDER BY last_updated DESC
+        LIMIT 10
+    """)
+    inventory_items = cursor.fetchall()
+    
+    # Get new user registrations awaiting approval
+    cursor.execute("""
+        SELECT 
+            user_id,
+            first_name,
+            last_name,
+            email,
+            created_at,
+            role
+        FROM Logins
+        WHERE role = 'newUser'
+        ORDER BY created_at DESC
+    """)
+    new_user_list = cursor.fetchall()
+    
+    # Get orders over time data (last 6 months)
+    cursor.execute("""
+        SELECT 
+            DATE_FORMAT(request_date, '%Y-%m') as month,
+            COUNT(*) as order_count
+        FROM requests
+        WHERE request_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(request_date, '%Y-%m')
+        ORDER BY month ASC
+    """)
+    orders_over_time = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template(
+        "admin/adminDash.html",
+        active_users=active_users,
+        pending_orders=pending_orders,
+        new_users=new_users,
+        food_per_person=food_per_person,
+        monthly_distribution=monthly_distribution,
+        popular_items=popular_items,
+        low_stock_items=low_stock_items,
+        pending_order_list=pending_order_list,
+        inventory_items=inventory_items,
+        new_user_list=new_user_list,
+        orders_over_time=orders_over_time
+    )
 
 @app.route("/dietary-preferences")
 @login_required(role="student")
@@ -333,3 +488,222 @@ def order_history():
 @login_required(role="student")
 def account_settings():
     return render_template("students/account-settings.html")
+
+# ============== ORDER MANAGEMENT ROUTES ==============
+
+@app.route("/admin/approve_order/<int:request_id>", methods=["POST"])
+@login_required(role="admin")
+def approve_order(request_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get all items in this request
+    cursor.execute("""
+        SELECT ri.item_id, fi.item_name, fi.quantity
+        FROM request_items ri
+        JOIN FoodInventory fi ON ri.item_id = fi.item_id
+        WHERE ri.request_id = %s
+    """, (request_id,))
+    
+    items = cursor.fetchall()
+    
+    # Check if all items are in stock
+    out_of_stock = []
+    for item in items:
+        if item['quantity'] <= 0:
+            out_of_stock.append(item['item_name'])
+    
+    if out_of_stock:
+        cursor.close()
+        conn.close()
+        flash(f"Cannot approve order #{request_id}. Out of stock: {', '.join(out_of_stock)}", "danger")
+        return redirect(url_for("order_details", request_id=request_id))
+    
+    # Update request status to approved
+    cursor.execute(
+        "UPDATE requests SET status = 'approved' WHERE request_id = %s",
+        (request_id,)
+    )
+    
+    # Deduct each item from inventory (decrease quantity by 1)
+    items_deducted = []
+    for item in items:
+        cursor.execute(
+            "UPDATE FoodInventory SET quantity = quantity - 1 WHERE item_id = %s",
+            (item['item_id'],)
+        )
+        items_deducted.append(item['item_name'])
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    flash(f"Order #{request_id} has been approved and inventory updated. Items deducted: {', '.join(items_deducted)}", "success")
+    return redirect(url_for("adminDash"))
+
+@app.route("/admin/deny_order/<int:request_id>", methods=["POST"])
+@login_required(role="admin")
+def deny_order(request_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        "UPDATE requests SET status = 'denied' WHERE request_id = %s",
+        (request_id,)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    flash(f"Order #{request_id} has been denied.", "warning")
+    return redirect(url_for("adminDash"))
+
+@app.route("/admin/order_details/<int:request_id>")
+@login_required(role="admin")
+def order_details(request_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get order details
+    cursor.execute("""
+        SELECT r.*, l.first_name, l.last_name, l.email
+        FROM requests r
+        JOIN Logins l ON r.student_id = l.user_id
+        WHERE r.request_id = %s
+    """, (request_id,))
+    order = cursor.fetchone()
+    
+    # Get ordered items
+    cursor.execute("""
+        SELECT fi.item_name, fi.category, fi.quantity, fi.weight
+        FROM request_items ri
+        JOIN FoodInventory fi ON ri.item_id = fi.item_id
+        WHERE ri.request_id = %s
+    """, (request_id,))
+    items = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template("admin/order_details.html", order=order, items=items)
+
+# ============== USER MANAGEMENT ROUTES ==============
+
+@app.route("/admin/approve_user/<user_id>", methods=["POST"])
+@login_required(role="admin")
+def approve_user(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        "UPDATE Logins SET role = 'student' WHERE user_id = %s",
+        (user_id,)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    flash(f"User {user_id} has been approved as a student.", "success")
+    return redirect(url_for("adminDash"))
+
+@app.route("/admin/deny_user/<user_id>", methods=["POST"])
+@login_required(role="admin")
+def deny_user(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Option 1: Delete the user
+    cursor.execute("DELETE FROM Logins WHERE user_id = %s", (user_id,))
+    
+    # Option 2: Keep user but mark as denied (uncomment if you prefer this)
+    # cursor.execute("UPDATE Logins SET role = 'denied' WHERE user_id = %s", (user_id,))
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    flash(f"User {user_id} has been denied and removed.", "warning")
+    return redirect(url_for("adminDash"))
+
+
+# ============== INVENTORY MANAGEMENT ROUTES ==============
+
+@app.route("/admin/inventory_management")
+@login_required(role="admin")
+def inventory_management():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get all inventory items, ordered by category and name
+    cursor.execute("""
+        SELECT 
+            item_id,
+            item_name,
+            category,
+            quantity,
+            weight,
+            last_updated
+        FROM FoodInventory
+        ORDER BY category ASC, item_name ASC
+    """)
+    inventory_items = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template(
+        "admin/inventory_management.html",
+        inventory_items=inventory_items
+    )
+
+@app.route("/admin/update_stock/<int:item_id>/<action>", methods=["POST"])
+@login_required(role="admin")
+def update_stock(item_id, action):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get the amount from form data (default to 1 if not provided)
+    amount = int(request.form.get('amount', 1))
+    
+    # Get current item info
+    cursor.execute("SELECT item_name, quantity FROM FoodInventory WHERE item_id = %s", (item_id,))
+    item = cursor.fetchone()
+    
+    if not item:
+        cursor.close()
+        conn.close()
+        flash("Item not found.", "danger")
+        return redirect(url_for("inventory_management"))
+    
+    # Update quantity based on action
+    if action == "increase":
+        cursor.execute(
+            "UPDATE FoodInventory SET quantity = quantity + %s WHERE item_id = %s",
+            (amount, item_id)
+        )
+        new_quantity = item['quantity'] + amount
+        flash(f"Increased stock for '{item['item_name']}' by {amount} to {new_quantity}.", "success")
+    elif action == "decrease":
+        if item['quantity'] >= amount:
+            cursor.execute(
+                "UPDATE FoodInventory SET quantity = quantity - %s WHERE item_id = %s",
+                (amount, item_id)
+            )
+            new_quantity = item['quantity'] - amount
+            flash(f"Decreased stock for '{item['item_name']}' by {amount} to {new_quantity}.", "warning")
+        else:
+            cursor.close()
+            conn.close()
+            flash(f"Cannot decrease stock for '{item['item_name']}' by {amount} - current stock is only {item['quantity']}.", "danger")
+            return redirect(url_for("inventory_management"))
+    else:
+        cursor.close()
+        conn.close()
+        flash("Invalid action.", "danger")
+        return redirect(url_for("inventory_management"))
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    return redirect(url_for("inventory_management"))

@@ -374,3 +374,196 @@ footer {
     color: #856404;
     border: 1px solid #ffeeba;
 }
+
+/* Minimal additional styles only for dashboard-specific components not in base CSS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: var(--highlight);
+    padding: 20px;
+    border-radius: 6px;
+    text-align: center;
+    border: 2px solid var(--mount-navy);
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--mount-navy);
+    margin: 10px 0;
+}
+
+.stat-label {
+    color: var(--dark-text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stat-sublabel {
+    color: #666;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.admin-table th {
+    background-color: var(--mount-navy);
+    color: white;
+    font-weight: bold;
+}
+
+.admin-table tr:hover {
+    background-color: var(--light-gray);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+.btn-success {
+    background-color: var(--success);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    color: var(--dark-text);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.status-pending {
+    background-color: var(--warning);
+    color: var(--dark-text);
+}
+
+.status-approved {
+    background-color: var(--success);
+    color: white;
+}
+
+.status-low {
+    background-color: var(--danger);
+    color: white;
+}
+
+.status-medium {
+    background-color: var(--warning);
+    color: var(--dark-text);
+}
+
+.status-good {
+    background-color: var(--success);
+    color: white;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.action-card {
+    padding: 20px;
+    border: 2px solid var(--mount-navy);
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: white;
+    text-decoration: none;
+    color: var(--dark-text);
+}
+
+.action-card:hover {
+    background-color: var(--highlight);
+    transform: translateY(-3px);
+}
+
+.action-card h3 {
+    color: var(--mount-navy);
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.action-icon {
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.chart-placeholder {
+    background-color: var(--light-gray);
+    border: 2px dashed var(--medium-gray);
+    border-radius: 6px;
+    padding: 30px;
+    text-align: center;
+    color: #666;
+    margin: 15px 0;
+}
+
+.alert-box {
+    background-color: #fff3cd;
+    border-left: 4px solid var(--warning);
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.container-wide {
+    max-width: 1400px;
+}
+
+body {
+    padding-bottom: 120px;
+}
+
+@media (max-width: 768px) {
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}

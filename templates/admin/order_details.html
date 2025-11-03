@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}"
+        media="screen and (min-width:481px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/mobileStyle.css') }}"
+        media="screen and (max-width:480px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/adminDash.css') }}">
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - Mount Table</title>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="{{ url_for('adminDash') }}" class="logo">Mount Table Admin</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="{{ url_for('adminDash') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('adminDash') }}#orders">Orders</a></li>
+                <li><a href="{{ url_for('adminDash') }}#inventory">Inventory</a></li>
+                <li><a href="{{ url_for('adminDash') }}#users">New Users</a></li>
+                <li class="dropdown">
+                    <a href="#">More</a>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('index') }}">Back to Home</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container container-wide">
+        <header>
+            <h1>Order Details - Request #{{ order.request_id }}</h1>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Back Button -->
+        <div style="margin-bottom: 20px;">
+            <a href="{{ url_for('adminDash') }}" class="button">← Back to Dashboard</a>
+        </div>
+
+        <!-- Order Information -->
+        <h2>Order Information</h2>
+        <div class="user-info">
+            <p><strong>Request ID:</strong> #{{ order.request_id }}</p>
+            <p><strong>Student ID:</strong> {{ order.student_id }}</p>
+            <p><strong>Student Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+            <p><strong>Email:</strong> {{ order.email }}</p>
+            <p><strong>Request Date:</strong> {{ order.request_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p><strong>Status:</strong>
+                {% if order.status == 'pending' %}
+                <span class="status-badge status-pending">{{ order.status|capitalize }}</span>
+                {% elif order.status == 'approved' %}
+                <span class="status-badge status-approved">{{ order.status|capitalize }}</span>
+                {% else %}
+                <span class="status-badge" style="background-color: var(--danger); color: white;">{{
+                    order.status|capitalize }}</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Requested Items -->
+        <h2>Requested Items ({{ items|length }} items)</h2>
+        {% if items %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th>Current Stock</th>
+                    <th>Weight/Unit</th>
+                    <th>Availability</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.weight if item.weight else '-' }}</td>
+                    <td>
+                        {% if item.quantity > 0 %}
+                        <span class="status-badge status-good">In Stock</span>
+                        {% else %}
+                        <span class="status-badge status-low">Out of Stock</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="info-text">No items found for this order.</p>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        {% if order.status == 'pending' %}
+        <h2>Actions</h2>
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <form method="POST" action="{{ url_for('approve_order', request_id=order.request_id) }}"
+                onsubmit="return confirm('Are you sure you want to approve this order? This will deduct items from inventory.');">
+                <button type="submit" class="button btn-success">
+                    ✓ Approve Order & Update Inventory
+                </button>
+            </form>
+            <form method="POST" action="{{ url_for('deny_order', request_id=order.request_id) }}"
+                onsubmit="return confirm('Are you sure you want to deny this order?');">
+                <button type="submit" class="button btn-danger">
+                    ✗ Deny Order
+                </button>
+            </form>
+        </div>
+
+        <!-- Warning for out of stock items -->
+        {% set out_of_stock = items|selectattr('quantity', 'equalto', 0)|list %}
+        {% if out_of_stock %}
+        <div class="alert-box" style="margin-top: 20px;">
+            <strong>⚠️ Warning:</strong> Some items are out of stock. You may want to update inventory before approving:
+            <ul style="margin: 10px 0 0 20px;">
+                {% for item in out_of_stock %}
+                <li>{{ item.item_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% elif order.status == 'approved' %}
+        <div class="flash success" style="margin-top: 20px;">
+            ✓ This order has already been approved on {{ order.request_date.strftime('%Y-%m-%d') }}.
+        </div>
+        {% elif order.status == 'denied' %}
+        <div class="flash danger" style="margin-top: 20px;">
+            ✗ This order was denied.
+        </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <div class="copyright">
+            © 2025 Mount Table. All rights reserved.
+        </div>
+    </footer>
+</body>
+
+</html>

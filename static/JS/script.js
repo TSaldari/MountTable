@@ -208,3 +208,45 @@ document.addEventListener("DOMContentLoaded", function () {
     validateForgotIdForm();
     setupMobileNav();
 });
+
+// Inventory Management - Stock Adjustment Functionality
+document.addEventListener('DOMContentLoaded', function () {
+    // Handle increase button clicks
+    const increaseButtons = document.querySelectorAll('.increase-btn');
+    increaseButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id');
+            const adjustInput = document.getElementById('adjust-' + itemId);
+            const amount = parseInt(adjustInput.value) || 1;
+
+            // Set the hidden input value
+            document.getElementById('amount-increase-' + itemId).value = amount;
+
+            // Submit the form
+            document.getElementById('form-increase-' + itemId).submit();
+        });
+    });
+
+    // Handle decrease button clicks
+    const decreaseButtons = document.querySelectorAll('.decrease-btn');
+    decreaseButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id');
+            const currentStock = parseInt(this.getAttribute('data-current-stock'));
+            const adjustInput = document.getElementById('adjust-' + itemId);
+            const amount = parseInt(adjustInput.value) || 1;
+
+            // Check if decrease would result in negative stock
+            if (amount > currentStock) {
+                alert('Cannot decrease by ' + amount + '. Current stock is only ' + currentStock + '.');
+                return;
+            }
+
+            // Set the hidden input value
+            document.getElementById('amount-decrease-' + itemId).value = amount;
+
+            // Submit the form
+            document.getElementById('form-decrease-' + itemId).submit();
+        });
+    });
+});

@@ -285,12 +285,11 @@ def order_form():
         cursor.close()
         conn.close()
 
-        return redirect(url_for("order_form"))  # redirect to GET view
+        return redirect(url_for("order_confirmation", request_id=request_id))
 
     # Handle GET request
     return render_template("student/orderForm.html", inventory_data=json.dumps(inventory_data),user_name=user_name,user_id=display_id,allergen_data=json.dumps(ALLERGEN_MAP))
 
-# REMOVED THE DUPLICATE adminDash FUNCTION THAT WAS HERE (lines 280-283)
 
 def generate_user_id(cursor):
     while True:
@@ -348,6 +347,110 @@ def logout():
     session.clear()
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
+
+
+@app.route("/orderHistory")
+@login_required(role="student")
+def order_history():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    student_id = session.get("user_id")
+    
+    # Get user details
+    cursor.execute(
+        "SELECT user_id, first_name, last_name FROM Logins WHERE user_id = %s",
+        (student_id,)
+    )
+    user_info = cursor.fetchone()
+    
+    if user_info:
+        first_name = user_info.get('first_name') or ''
+        last_name = user_info.get('last_name') or ''
+        user_name = f"{first_name} {last_name}".strip() or "Student"
+        display_id = user_info.get('user_id') or student_id
+    else:
+        user_name = "Guest User"
+        display_id = student_id
+    
+    # Get all orders for this student with item count
+    cursor.execute("""
+        SELECT 
+            r.request_id,
+            r.request_date,
+            r.status,
+            COUNT(ri.item_id) as item_count
+        FROM requests r
+        LEFT JOIN request_items ri ON r.request_id = ri.request_id
+        WHERE r.student_id = %s
+        GROUP BY r.request_id, r.request_date, r.status
+        ORDER BY r.request_date DESC
+    """, (student_id,))
+    
+    orders = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template(
+        "student/orderHistory.html",
+        orders=orders,
+        user_name=user_name,
+        user_id=display_id
+    )
+
+@app.route("/order_confirmation/<int:request_id>")
+@login_required(role="student")
+def order_confirmation(request_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    student_id = session.get("user_id")
+    
+    # Get order details - verify this order belongs to the logged-in user
+    cursor.execute("""
+        SELECT r.request_id, r.student_id, r.request_date, r.status,
+               l.first_name, l.last_name
+        FROM requests r
+        JOIN Logins l ON r.student_id = l.user_id
+        WHERE r.request_id = %s AND r.student_id = %s
+    """, (request_id, student_id))
+    
+    order = cursor.fetchone()
+    
+    if not order:
+        cursor.close()
+        conn.close()
+        flash("Order not found.", "danger")
+        return redirect(url_for("order_form"))
+    
+    # Get all items in this order
+    cursor.execute("""
+        SELECT fi.item_name, fi.category, fi.weight
+        FROM request_items ri
+        JOIN FoodInventory fi ON ri.item_id = fi.item_id
+        WHERE ri.request_id = %s
+        ORDER BY fi.category, fi.item_name
+    """, (request_id,))
+    
+    items = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    # Prepare user name
+    first_name = order.get('first_name') or ''
+    last_name = order.get('last_name') or ''
+    user_name = f"{first_name} {last_name}".strip() or "Student"
+    
+    return render_template(
+        "student/orderConfirmation.html",
+        order=order,
+        items=items,
+        user_name=user_name,
+        user_id=student_id
+    )
+
 
 @app.route("/admin/adminDash")
 @login_required(role="admin")
@@ -517,11 +620,6 @@ def adminDash():
         new_user_list=new_user_list,
         orders_over_time=orders_over_time
     )
-
-@app.route("/orderHistory")
-@login_required(role="student")
-def order_history():
-    return render_template("students/orderHistory.html")
 
 
 # ============== ORDER MANAGEMENT ROUTES ==============
@@ -742,3 +840,102 @@ def update_stock(item_id, action):
     conn.close()
     
     return redirect(url_for("inventory_management"))
+
+
+
+##################### Forgot Password ###############################
+
+@app.route("/admin/user_lookup", methods=["GET", "POST"])
+@login_required(role="admin")
+def user_lookup():
+    if request.method == "POST":
+        search_term = request.form.get("search_term", "").strip()
+        
+        if not search_term:
+            flash("Please enter a name or email to search.", "warning")
+            return render_template("admin/user_lookup.html", users=None)
+        
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        # Search by first name, last name, or email
+        cursor.execute("""
+            SELECT user_id, first_name, last_name, email, role, created_at
+            FROM Logins
+            WHERE first_name LIKE %s 
+            OR last_name LIKE %s 
+            OR email LIKE %s
+            OR CONCAT(first_name, ' ', last_name) LIKE %s
+            ORDER BY last_name, first_name
+        """, (f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%"))
+        
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        
+        if not users:
+            flash(f"No users found matching '{search_term}'.", "info")
+        
+        return render_template("admin/user_lookup.html", users=users, search_term=search_term)
+    
+    return render_template("admin/user_lookup.html", users=None)
+
+
+@app.route("/admin/reset_password/<user_id>", methods=["GET", "POST"])
+@login_required(role="admin")
+def reset_password(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get user details
+    cursor.execute("""
+        SELECT user_id, first_name, last_name, email, role
+        FROM Logins
+        WHERE user_id = %s
+    """, (user_id,))
+    
+    user = cursor.fetchone()
+    
+    if not user:
+        cursor.close()
+        conn.close()
+        flash("User not found.", "danger")
+        return redirect(url_for("user_lookup"))
+    
+    if request.method == "POST":
+        new_password = request.form.get("new_password")
+        confirm_password = request.form.get("confirm_password")
+        
+        # Validate passwords match
+        if new_password != confirm_password:
+            cursor.close()
+            conn.close()
+            flash("Passwords do not match. Please try again.", "danger")
+            return render_template("admin/reset_password.html", user=user)
+        
+        # Validate password length
+        if len(new_password) < 8:
+            cursor.close()
+            conn.close()
+            flash("Password must be at least 8 characters long.", "danger")
+            return render_template("admin/reset_password.html", user=user)
+        
+        # Hash the new password with Argon2
+        password_hash = ph.hash(new_password)
+        
+        # Update the password in database
+        cursor.execute(
+            "UPDATE Logins SET password_hash = %s WHERE user_id = %s",
+            (password_hash, user_id)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        flash(f"Password successfully reset for {user['first_name']} {user['last_name']} (ID: {user_id}).", "success")
+        return redirect(url_for("user_lookup"))
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template("admin/reset_password.html", user=user)

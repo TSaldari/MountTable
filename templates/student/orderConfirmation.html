@@ -9,7 +9,7 @@
         media="screen and (max-width:480px)">
     <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mount Table - Order History</title>
+    <title>Mount Table - Order Confirmation</title>
 </head>
 
 <body>
@@ -19,7 +19,7 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="{{ url_for('index') }}">Home</a></li>
                 <li><a href="{{ url_for('order_form') }}">Request Food</a></li>
-                <li><a href="{{ url_for('order_history') }}">Order History</a></li>
+                <li><a href="#">Order History</a></li>
                 <li class="dropdown">
                     <a href="#">Account</a>
                     <div class="dropdown-content">
@@ -42,69 +42,62 @@
 
     <div class="container">
         <header>
-            <h1>My Order History</h1>
+            <h1>✓ Order Confirmation</h1>
         </header>
 
-        <div class="user-info">
-            <h3>Welcome, <strong>{{ user_name }}</strong></h3>
-            <p>ID: <span class="user-id">{{ user_id }}</span></p>
-            <p>View all your past food requests and their current status.</p>
+        <div class="flash success" style="text-align: center; font-size: 18px; padding: 20px;">
+            <strong>Thank you for your order!</strong><br>
+            Your food request has been submitted successfully.
         </div>
 
-        <h2>Your Orders ({{ orders|length }} total)</h2>
+        <div class="user-info">
+            <h2>Order Receipt</h2>
+            <p><strong>Order Number:</strong> #{{ order.request_id }}</p>
+            <p><strong>Student Name:</strong> {{ user_name }}</p>
+            <p><strong>Student ID:</strong> {{ order.student_id }}</p>
+            <p><strong>Order Date:</strong> {{ order.request_date.strftime('%B %d, %Y at %I:%M %p') }}</p>
+            <p><strong>Status:</strong>
+                <span class="status-badge status-pending">{{ order.status|capitalize }}</span>
+            </p>
+        </div>
 
-        {% if orders %}
+        <h2>Items Requested ({{ items|length }} items)</h2>
+
+        {% if items %}
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>Order #</th>
-                    <th>Date Submitted</th>
-                    <th>Items</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th>Weight/Unit</th>
                 </tr>
             </thead>
             <tbody>
-                {% for order in orders %}
+                {% for item in items %}
                 <tr>
-                    <td><strong>#{{ order.request_id }}</strong></td>
-                    <td>{{ order.request_date.strftime('%B %d, %Y at %I:%M %p') }}</td>
-                    <td>{{ order.item_count }} item{% if order.item_count != 1 %}s{% endif %}</td>
-                    <td>
-                        {% if order.status == 'pending' %}
-                        <span class="status-badge status-pending">{{ order.status|capitalize }}</span>
-                        {% elif order.status == 'approved' %}
-                        <span class="status-badge status-approved" style="background-color: #28a745; color: white;">{{
-                            order.status|capitalize }}</span>
-                        {% elif order.status == 'denied' %}
-                        <span class="status-badge" style="background-color: #dc3545; color: white;">{{
-                            order.status|capitalize }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('order_confirmation', request_id=order.request_id) }}"
-                            class="button btn-small">View Details</a>
-                    </td>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.weight if item.weight else '-' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <div class="user-info" style="text-align: center; padding: 40px;">
-            <p style="font-size: 18px; color: #666;">You haven't placed any orders yet.</p>
-            <p style="margin-top: 20px;">
-                <a href="{{ url_for('order_form') }}" class="button">Submit Your First Order</a>
-            </p>
-        </div>
+        <p class="info-text">No items found in this order.</p>
         {% endif %}
 
-        {% if orders %}
+        <div class="user-info" style="margin-top: 30px;">
+            <h3>What happens next?</h3>
+            <p>• Your order is currently <strong>pending approval</strong></p>
+            <p>• An administrator will review your request</p>
+            <p>• You will be notified once your order is approved</p>
+            <p>• Pick up instructions will be provided upon approval</p>
+        </div>
+
         <div style="text-align: center; margin-top: 30px;">
-            <a href="{{ url_for('order_form') }}" class="button">Submit New Order</a>
+            <a href="{{ url_for('order_form') }}" class="button">Submit Another Order</a>
             <a href="{{ url_for('index') }}" class="button" style="background-color: #666;">Return to Home</a>
         </div>
-        {% endif %}
-
     </div>
 
     <footer>

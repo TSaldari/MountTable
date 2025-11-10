@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}"
+        media="screen and (min-width:481px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/mobileStyle.css') }}"
+        media="screen and (max-width:480px)">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/adminDash.css') }}">
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mount Table - User Lookup</title>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="{{ url_for('adminDash') }}" class="logo">Mount Table Admin</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="{{ url_for('adminDash') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('inventory_management') }}">Inventory</a></li>
+                <li><a href="{{ url_for('user_lookup') }}">User Lookup</a></li>
+                <li class="dropdown">
+                    <a href="#">More</a>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('index') }}">Back to Home</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container container-wide">
+        <header>
+            <h1>User Lookup & ID Recovery</h1>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Search Form -->
+        <div class="user-info">
+            <h2>Search for User</h2>
+            <p>Search by first name, last name, or email address to find a user and reset their password.</p>
+            <form method="POST" action="{{ url_for('user_lookup') }}">
+                <div class="form-group">
+                    <label for="search_term">Name or Email</label>
+                    <input type="text" id="search_term" name="search_term"
+                        placeholder="Enter first name, last name, or email"
+                        value="{{ search_term if search_term else '' }}" required>
+                </div>
+                <button type="submit" class="button">Search Users</button>
+            </form>
+        </div>
+
+        <!-- Search Results -->
+        {% if users is not none %}
+        <h2>Search Results</h2>
+
+        {% if users %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><strong>{{ user.user_id }}</strong></td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.role == 'admin' %}
+                        <span class="status-badge" style="background-color: #e74c3c; color: white;">Admin</span>
+                        {% elif user.role == 'student' %}
+                        <span class="status-badge status-approved">Student</span>
+                        {% elif user.role == 'newUser' %}
+                        <span class="status-badge status-pending">New User</span>
+                        {% else %}
+                        <span class="status-badge">{{ user.role|capitalize }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('reset_password', user_id=user.user_id) }}"
+                            class="button btn-small btn-success">Reset Password</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="info-text" style="text-align: center; padding: 30px;">
+            No users found matching your search.
+        </p>
+        {% endif %}
+
+        {% endif %}
+
+        <div style="margin-top: 30px;">
+            <a href="{{ url_for('adminDash') }}" class="button" style="background-color: #666;">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            © 2025 Mount Table. All rights reserved.
+        </div>
+    </footer>
+</body>
+
+</html>

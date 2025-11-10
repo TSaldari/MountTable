@@ -163,30 +163,19 @@ document.addEventListener('DOMContentLoaded', function () {
     handleAllergyCheck();
 });
 
-// Forgot ID form validation -- was removed, may add back later
-function validateForgotIdForm() {
-    const form = document.getElementById("forgotIdForm");
-    if (!form) return;
+// Forgot ID alert
+document.addEventListener('DOMContentLoaded', function () {
+    const forgotIdLinks = document.querySelectorAll('a[href="#"]:not(.logo)');
 
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const firstName = document.getElementById("firstName").value;
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        if (!firstName || !email || !password) {
-            alert("Please fill in all fields.");
-            return;
+    forgotIdLinks.forEach(link => {
+        if (link.textContent.includes('Forgot')) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                alert('Please visit Mount Table in person for assistance with your ID.');
+            });
         }
-
-        // In production, this would verify with the server
-        alert("Verification successful! Your Student ID is: MT12345");
-
-        // Redirect to login page
-        // window.location.href = "login.html";
     });
-}
+});
 
 // Toggle mobile navigation menu
 function setupMobileNav() {

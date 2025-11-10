@@ -43,10 +43,43 @@ def login_required(role=None):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    student_id = session.get("user_id")
+    
+    cursor.execute(
+        "SELECT user_id, first_name, last_name FROM Logins WHERE user_id = %s",
+        (student_id,)
+    )
+    user_info = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if user_info:
+        first_name = user_info.get('first_name') or ''
+        last_name = user_info.get('last_name') or ''
+        user_name = f"{first_name} {last_name}".strip() or "Student"
+        display_id = user_info.get('user_id') or student_id 
+    else:
+        user_name = "Guest User"
+        display_id = student_id
+    
+    return render_template("index.html",
+                         user_name=user_name,
+                         user_id=display_id)
 
 @app.route("/login", methods=["GET","POST"])
 def login():
+    # If user is already logged in, redirect them
+    if "user_id" in session:
+        role = session.get("role")
+        if role == "admin":
+            return redirect(url_for("adminDash"))
+        elif role == "student":
+            return redirect(url_for("index"))
+
+    # Checking id/pass       
     if request.method == "POST":
         user_id = request.form["studentId"]
         password = request.form["password"]
@@ -268,6 +301,14 @@ def generate_user_id(cursor):
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    # If user is already logged in, redirect them
+    if "user_id" in session:
+        role = session.get("role")
+        if role == "admin":
+            return redirect(url_for("adminDash"))
+        else:
+            return redirect(url_for("index"))
+
     if request.method == "POST":
         password = request.form["password"]
 
@@ -340,16 +381,19 @@ def adminDash():
     # Calculate lbs of food per person
     cursor.execute("""
         SELECT 
-            COALESCE(SUM(CAST(REPLACE(fi.weight, 'oz', '') AS DECIMAL(10,2))) / 16.0, 0) / 
-            NULLIF(COUNT(DISTINCT r.student_id), 0) as food_per_person
+            COALESCE(SUM(CAST(REPLACE(fi.weight, 'oz', '') AS DECIMAL(10,2))) / 16.0, 0) as total_lbs,
+            (SELECT COUNT(DISTINCT student_id) FROM requests WHERE status = 'approved') as unique_students
         FROM requests r
         JOIN request_items ri ON r.request_id = ri.request_id
         JOIN FoodInventory fi ON ri.item_id = fi.item_id
         WHERE fi.weight LIKE '%oz%' AND r.status = 'approved'
     """)
     result = cursor.fetchone()
-    food_per_person = round(result['food_per_person'] if result['food_per_person'] else 0, 1)
 
+    if result and result['unique_students'] and result['unique_students'] > 0:
+        food_per_person = round(result['total_lbs'] / result['unique_students'], 1)
+    else:
+        food_per_person = 0
     # Calculate monthly distribution
     cursor.execute("""
         SELECT 
@@ -363,7 +407,7 @@ def adminDash():
         AND YEAR(r.request_date) = YEAR(CURRENT_DATE())
     """)
     result = cursor.fetchone()
-    monthly_distribution = int(result['monthly_lbs'] if result['monthly_lbs'] else 0)
+    monthly_distribution = round(result['monthly_lbs'] if result['monthly_lbs'] else 0, 1)  # 
         
     # Get most popular items (top 5)
     cursor.execute("""
@@ -474,20 +518,11 @@ def adminDash():
         orders_over_time=orders_over_time
     )
 
-@app.route("/dietary-preferences")
-@login_required(role="student")
-def dietary_preferences():
-    return render_template("students/dietary-preferences.html")
-
 @app.route("/orderHistory")
 @login_required(role="student")
 def order_history():
     return render_template("students/orderHistory.html")
 
-@app.route("/account-settings")
-@login_required(role="student")
-def account_settings():
-    return render_template("students/account-settings.html")
 
 # ============== ORDER MANAGEMENT ROUTES ==============
 

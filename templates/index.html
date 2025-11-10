@@ -17,16 +17,24 @@
         <div class="nav-container">
             <a href="{{ url_for('index') }}" class="logo">Mount Table</a>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('order_form') }}">Order Form</a></li>
                 <li><a href="{{ url_for('login') }}">Login</a></li>
                 <li><a href="{{ url_for('register') }}">Sign Up</a></li>
                 <li><a href="#">Forgot ID</a></li>
                 <li class="dropdown">
                     <a href="#">More</a>
                     <div class="dropdown-content">
-                        <a href="#">About Us</a>
-                        <a href="#">Contact</a>
-                        <a href="#">FAQ</a>
+                        <div>
+                            <p>
+                                <center><strong>{{ user_name }}</strong></center>
+                            </p>
+                            <p>
+                                <center><strong>{{ user_id }}</strong></center>
+                            </p>
+                        </div>
+                        <a href="{{ url_for('logout') }}">
+                            <center>Logout</center>
+                        </a>
                     </div>
                 </li>
             </ul>

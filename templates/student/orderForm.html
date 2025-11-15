@@ -57,6 +57,7 @@
         </div>
 
         <form id="foodRequestForm" method="POST" action="{{ url_for('order_form') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="form-group">
                 <label>Dietary Restrictions</label>
                 <div class="checkbox-group">

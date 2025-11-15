@@ -91,6 +91,7 @@
                             <form method="POST"
                                 action="{{ url_for('update_stock', item_id=item.item_id, action='decrease') }}"
                                 style="display: inline;" id="form-decrease-{{ item.item_id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                 <input type="hidden" name="amount" id="amount-decrease-{{ item.item_id }}" value="1">
                                 <button type="button" class="button btn-small btn-danger decrease-btn"
                                     data-item-id="{{ item.item_id }}" data-current-stock="{{ item.quantity }}"
@@ -99,6 +100,7 @@
                             <form method="POST"
                                 action="{{ url_for('update_stock', item_id=item.item_id, action='increase') }}"
                                 style="display: inline;" id="form-increase-{{ item.item_id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                 <input type="hidden" name="amount" id="amount-increase-{{ item.item_id }}" value="1">
                                 <button type="button" class="button btn-small btn-success increase-btn"
                                     data-item-id="{{ item.item_id }}"

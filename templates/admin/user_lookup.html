@@ -53,6 +53,7 @@
             <h2>Search for User</h2>
             <p>Search by first name, last name, or email address to find a user and reset their password.</p>
             <form method="POST" action="{{ url_for('user_lookup') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <div class="form-group">
                     <label for="search_term">Name or Email</label>
                     <input type="text" id="search_term" name="search_term"

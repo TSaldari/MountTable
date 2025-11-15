@@ -74,6 +74,34 @@
             </p>
         </div>
 
+        <!-- Admin Note Section -->
+        <h2>Admin Note for Student</h2>
+        <div class="user-info">
+            {% if order.status == 'pending' %}
+            <p style="color: #666; margin-bottom: 15px;">Add a note that will be visible to the student (e.g., pickup
+                instructions, delays, missing items).</p>
+            <form method="POST" action="{{ url_for('update_note', request_id=order.request_id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="form-group">
+                    <label for="admin_note">Note to Student:</label>
+                    <textarea id="admin_note" name="admin_note" rows="4"
+                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: Arial, sans-serif; font-size: 14px;">{{ order.admin_note if order.admin_note else '' }}</textarea>
+                </div>
+                <button type="submit" class="button btn-success">Save Note</button>
+                {% if order.admin_note %}
+                <button type="submit" class="button" style="background-color: #666;"
+                    onclick="document.getElementById('admin_note').value=''; return true;">Clear Note</button>
+                {% endif %}
+            </form>
+            {% else %}
+            {% if order.admin_note %}
+            <p><strong>Note:</strong> {{ order.admin_note }}</p>
+            {% else %}
+            <p style="color: #999; font-style: italic;">No note was added to this order.</p>
+            {% endif %}
+            {% endif %}
+        </div>
+
         <!-- Requested Items -->
         <h2>Requested Items ({{ items|length }} items)</h2>
         {% if items %}
@@ -85,6 +113,9 @@
                     <th>Current Stock</th>
                     <th>Weight/Unit</th>
                     <th>Availability</th>
+                    {% if order.status == 'pending' %}
+                    <th>Actions</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -101,6 +132,17 @@
                         <span class="status-badge status-low">Out of Stock</span>
                         {% endif %}
                     </td>
+                    {% if order.status == 'pending' %}
+                    <td>
+                        <form method="POST"
+                            action="{{ url_for('remove_item', request_id=order.request_id, item_id=item.item_id) }}"
+                            style="display: inline;"
+                            onsubmit="return confirm('Are you sure you want to remove {{ item.item_name }} from this order?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                            <button type="submit" class="button btn-small btn-danger">Remove</button>
+                        </form>
+                    </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -115,12 +157,14 @@
         <div style="display: flex; gap: 15px; margin-top: 20px;">
             <form method="POST" action="{{ url_for('approve_order', request_id=order.request_id) }}"
                 onsubmit="return confirm('Are you sure you want to approve this order? This will deduct items from inventory.');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <button type="submit" class="button btn-success">
                     ✓ Approve Order & Update Inventory
                 </button>
             </form>
             <form method="POST" action="{{ url_for('deny_order', request_id=order.request_id) }}"
                 onsubmit="return confirm('Are you sure you want to deny this order?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <button type="submit" class="button btn-danger">
                     ✗ Deny Order
                 </button>

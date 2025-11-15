@@ -61,6 +61,14 @@
             </p>
         </div>
 
+        <!-- Admin Note Display for Student -->
+        {% if order.admin_note %}
+        <div class="alert-box" style="background-color: #e3f2fd; border-left: 4px solid #2196F3;">
+            <h3 style="margin-top: 0; color: #1976D2;">Note from Mount Table</h3>
+            <p style="margin-bottom: 0; font-size: 16px;">{{ order.admin_note }}</p>
+        </div>
+        {% endif %}
+
         <h2>Items Requested ({{ items|length }} items)</h2>
 
         {% if items %}
@@ -88,9 +96,8 @@
 
         <div class="user-info" style="margin-top: 30px;">
             <h3>What happens next?</h3>
-            <p>• Your order is currently <strong>pending approval</strong></p>
             <p>• An administrator will review your request</p>
-            <p>• You will be notified once your order is approved</p>
+            <p>• You will be notified once your order is approved or rejected</p>
             <p>• Pick up instructions will be provided upon approval</p>
         </div>
 

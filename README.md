@@ -71,26 +71,24 @@ Flask-WTF==1.2.1
 
 ### Step 3: Create/Populate the Database
 
-1. Open a command prompt and traverse to the path of your MySQL Server's bin folder
+1. Open a command prompt and traverse to the path of your MySQL Server's bin folder:
   ```bash
   cd "C:\Program Files\MySQL\MySQL Server 9.5\bin"
   ```
-2. Login to your MySQL server, and enter your password
+2. Login to your MySQL server, and enter your password:
   ```bash
   mysql -u root -p
-  Enter password: ********************
   ```
-3. Import the schema
+3. Import the schema:
   ```bash
-  mysql> CREATE DATABASE foodmanagementdb;
-  mysql> USE foodmanagementdb;
-  mysql> exit
+  CREATE DATABASE foodmanagementdb;
+  USE foodmanagementdb;
+  exit
   ```
 
-4. Import the MountTable.sql dump file to get all your tables and information 
+4. Import the MountTable.sql dump file to get all your tables and information:
   ```bash
   mysql -u root -p foodmanagementdb < C:\Users\missy\Documents\MountTable\MountTable-main\instance\MountTable.sql
-  Enter password: ********************
   ```
 
 Congrats, your MySQL database should be all set up

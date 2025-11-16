@@ -1,6 +1,6 @@
-# Mount Table Food Management System
+# Mount Table Web Application
 
-A comprehensive web-based food pantry management system designed for Mount St. Mary's University. This application enables students to request food items while allowing administrators to manage inventory, approve orders, and track food distribution analytics.
+A comprehensive web-based food management system designed for the Mount's free food resource: The Mount Table. This application enables students to request food items while allowing administrators to manage inventory, approve orders, and track food distribution analytics.
 
 ---
 
@@ -59,7 +59,7 @@ Flask-WTF==1.2.1
 
 1. Download and install **MySQL Server** from [mysql.com](https://dev.mysql.com/downloads/mysql/)
 2. Download and install **MySQL Workbench** from [mysql.com](https://dev.mysql.com/downloads/workbench/)
-3. During MySQL installation, set a root password (you'll need this later)
+3. During MySQL installation, set a root password (you'll need this later, so remember it)
 
 ### Step 2: Set Up the Database
 
@@ -76,15 +76,15 @@ Flask-WTF==1.2.1
 
 ### Step 3: Populate the Database
 
-**Create an Admin Account:**
+**Create an Admin Account: This will make an admin account with the default credentials: admin, password**
 ```sql
 INSERT INTO Logins (user_id, password_hash, role, first_name, last_name, email)
-VALUES ('MT-00000001', 
-        '$argon2id$v=19$m=65536,t=3,p=4$yourhashhere', 
-        'admin', 
-        'Admin', 
-        'User', 
-        'admin@msmary.edu');
+VALUES ('admin1',
+        '$argon2id$v=19$m=65536,t=3,p=4$m85MFxVLdNSyVSWabmqFHw$uMA/OkLDgtlr+vXskthVugVdP4gJD7DZ9K8YXSqcdAw',
+        'admin',
+        NULL,
+        NULL,
+        NULL,)
 ```
 
 > **Note**: You'll need to generate a password hash first by running Python:
@@ -94,7 +94,7 @@ VALUES ('MT-00000001',
 > print(ph.hash("YourPasswordHere"))
 > ```
 
-**Add Food Inventory Items:**
+**Add Food Inventory Items: Should be able to get this from my .sql file**
 ```sql
 INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
 ('Chicken Soup', 'Soup', 50, '10.5oz'),
@@ -108,7 +108,7 @@ INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
 1. Open Command Prompt (Windows) or Terminal (Mac/Linux)
 2. Navigate to the project directory:
    ```bash
-   cd path/to/MountTable
+   cd "path/to/MountTable"
    ```
 3. Install required packages:
    ```bash
@@ -126,8 +126,6 @@ INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
    DB_NAME=FoodManagementDB
    SECRET_KEY=your-secret-key-change-this-to-random-string
    ```
-
-3. **IMPORTANT**: Never commit the `.env` file to version control!
 
 ### Step 6: Run the Application
 
@@ -162,11 +160,10 @@ INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
    - Enter your first and last name
    - Use your **Mount St. Mary's email** (@msmary.edu or @email.msmary.edu)
    - Create a secure password (minimum 8 characters)
-   - Complete all required demographic information
-   - Select any dietary restrictions (optional)
+   - Complete all required demographic information -- optional
 3. Click **"Create Account"**
 4. **Save your Mount Table ID** (format: MT-########) - you'll need this to log in!
-5. Wait for administrator approval (you'll receive confirmation)
+5. Wait for administrator approval -- give it up to 24 hours!
 
 #### 2. Logging In
 
@@ -421,7 +418,7 @@ For technical support or issues not covered here:
 
 This application includes several security measures:
 
-- **Password Hashing**: Argon2 encryption (industry standard)
+- **Password Hashing**: Argon2 encryption (industry standard) -- Also has auto password salting
 - **CSRF Protection**: Prevents cross-site request forgery attacks
 - **Role-Based Access**: Students and admins have separate permissions
 - **Session Management**: Automatic timeout after inactivity
@@ -445,41 +442,13 @@ This application includes several security measures:
 
 ---
 
-## 📞 Contact & Support
-
-**Mount Table Office**  
-Mount St. Mary's University  
-[Insert Address]  
-[Insert Phone Number]  
-[Insert Email]
-
-**Operating Hours**  
-[Insert Hours]
-
-**Technical Support**  
-[Insert Contact Information]
-
----
-
 ## 📄 License & Credits
 
-**Developed by**: Thomas E. Saldari 
+**Developed by**: Thomas E. Saldari, Jr
 **Institution**: Mount St. Mary's University  
 **Year**: 2025  
 
-This application is designed for educational and operational use by Mount St. Mary's University Mount Table food pantry program.
-
----
-
-## 🔄 Version History
-
-**Version 1.0** (January 2025)
-- Initial release
-- Student registration and ordering
-- Admin dashboard and inventory management
-- Order approval system
-- User management and password reset
-- Analytics and reporting
+This application is designed for educational and operational use by Mount St. Mary's University Mount Table free food resource program.
 
 ---
 

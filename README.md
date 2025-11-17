@@ -356,54 +356,6 @@ From the dashboard, you can quickly:
 
 ---
 
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### "Access denied for user 'root'@'localhost'"
-- **Solution**: Check your `.env` file has the correct MySQL password
-- Verify MySQL server is running in MySQL Workbench
-
-#### "Database 'FoodManagementDB' doesn't exist"
-- **Solution**: Run the `MountTable.sql` script in MySQL Workbench
-- Verify the database was created: `SHOW DATABASES;`
-
-#### "ModuleNotFoundError: No module named 'flask'"
-- **Solution**: Install Python dependencies:
-  ```bash
-  pip install Flask mysql-connector-python argon2-cffi python-dotenv Flask-WTF
-  ```
-
-#### Images Not Displaying
-- **Solution**: Verify images are in the `static/Images/` folder
-- Check image filenames match exactly (case-sensitive)
-- Clear browser cache and refresh
-
-#### "This email address is already registered"
-- **Solution**: Email addresses must be unique
-- Use a different email or contact admin for assistance
-
-#### Can't Access Order Form After Registration
-- **Solution**: Your account needs admin approval
-- Status shows as "newUser" until approved
-- Contact an administrator to approve your registration
-
-#### Items Grayed Out on Order Form
-- **Reasons**:
-  1. Item is out of stock
-  2. Item contains an allergen you selected
-- Hover over the item to see the reason
-- Contact admin if you believe this is an error
-
-### Getting Help
-
-For technical support or issues not covered here:
-1. Check the error message displayed in the browser
-2. Contact the application administrator
-3. For Mount Table students: Visit in person during operating hours
-
----
-
 ## 🔒 Security Features
 
 This application includes several security measures:

@@ -386,7 +386,7 @@ This application includes several security measures:
 
 ## 📄 License & Credits
 
-**Developed by**: Thomas E. Saldari, Jr
+**Developed by**: Thomas E. Saldari, Jr  
 **Institution**: Mount St. Mary's University  
 **Year**: 2025  
 

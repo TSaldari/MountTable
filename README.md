@@ -394,4 +394,4 @@ This application is designed for educational and operational use by Mount St. Ma
 
 ---
 
-**Thank you for using Mount Table Food Management System!** 🍽️
+**Thank you for using The Mount Table Web Application!** 🍽️

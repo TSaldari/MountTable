@@ -390,7 +390,7 @@ This application includes several security measures:
 **Institution**: Mount St. Mary's University  
 **Year**: 2025  
 
-This application is designed for educational and operational use by Mount St. Mary's University Mount Table free food resource program.
+This application is designed for educational and operational use by Mount St. Mary's University's free food resource program, The Mount Table.
 
 ---
 

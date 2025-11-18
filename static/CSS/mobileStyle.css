@@ -573,3 +573,34 @@ body {
         flex-direction: column;
     }
 }
+
+/* Responsive Table Wrapper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        border: 1px solid var(--medium-gray);
+        border-radius: 4px;
+    }
+
+    .admin-table {
+        min-width: 600px;
+        /* Forces horizontal scroll */
+        font-size: 14px;
+        /* Slightly smaller text */
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 8px;
+        /* Reduce padding on mobile */
+        white-space: nowrap;
+        /* Prevent text wrapping */
+    }
+}

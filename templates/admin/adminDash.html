@@ -112,7 +112,7 @@
         <!-- Two Column Layout -->
         <div class="two-column">
             <!-- Popular Items -->
-            <div>
+            <div class="table-responsive">
                 <h2>Most Popular Items</h2>
                 <table class="admin-table">
                     <thead>
@@ -142,7 +142,7 @@
             </div>
 
             <!-- Low Stock Items -->
-            <div>
+            <div class="table-responsive">
                 <h2>Low Stock Alerts</h2>
                 <table class="admin-table">
                     <thead>
@@ -181,82 +181,86 @@
         </div>
 
         <!-- Pending Orders Section -->
-        <h2 id="orders">Pending Orders (Accept Orders)</h2>
-        {% if pending_order_list %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Request ID</th>
-                    <th>Student ID</th>
-                    <th>Request Date</th>
-                    <th>Items</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in pending_order_list %}
-                <tr>
-                    <td>#{{ order.request_id }}</td>
-                    <td>{{ order.student_id }}</td>
-                    <td>{{ order.request_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>{{ order.item_count }} item{% if order.item_count != 1 %}s{% endif %}</td>
-                    <td><span class="status-badge status-pending">{{ order.status|capitalize }}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <a href="{{ url_for('order_details', request_id=order.request_id) }}"
-                                class="button btn-small">Details</a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <h2 id="orders">Pending Orders (Accept Orders)</h2>
+            {% if pending_order_list %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Student ID</th>
+                        <th>Request Date</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in pending_order_list %}
+                    <tr>
+                        <td>#{{ order.request_id }}</td>
+                        <td>{{ order.student_id }}</td>
+                        <td>{{ order.request_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ order.item_count }} item{% if order.item_count != 1 %}s{% endif %}</td>
+                        <td><span class="status-badge status-pending">{{ order.status|capitalize }}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('order_details', request_id=order.request_id) }}"
+                                    class="button btn-small">Details</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p class="info-text">No pending orders at this time.</p>
         {% endif %}
 
         <!-- New User Registration Section -->
-        <h2 id="users">New User Registrations (Complete Registration)</h2>
-        {% if new_user_list %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Registration Date</th>
-                    <th>Current Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in new_user_list %}
-                <tr>
-                    <td>{{ user.user_id }}</td>
-                    <td>{{ user.first_name }} {{ user.last_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
-                    <td><span class="status-badge status-pending">{{ user.role }}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <form method="POST" action="{{ url_for('approve_user', user_id=user.user_id) }}"
-                                style="display: inline;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                                <button type="submit" class="button btn-small btn-success">Approve</button>
-                            </form>
-                            <form method="POST" action="{{ url_for('deny_user', user_id=user.user_id) }}"
-                                style="display: inline;"
-                                onsubmit="return confirm('Are you sure you want to deny this user?');">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                                <button type="submit" class="button btn-small btn-danger">Deny</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <h2 id="users">New User Registrations (Complete Registration)</h2>
+            {% if new_user_list %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Registration Date</th>
+                        <th>Current Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in new_user_list %}
+                    <tr>
+                        <td>{{ user.user_id }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td><span class="status-badge status-pending">{{ user.role }}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <form method="POST" action="{{ url_for('approve_user', user_id=user.user_id) }}"
+                                    style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button type="submit" class="button btn-small btn-success">Approve</button>
+                                </form>
+                                <form method="POST" action="{{ url_for('deny_user', user_id=user.user_id) }}"
+                                    style="display: inline;"
+                                    onsubmit="return confirm('Are you sure you want to deny this user?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button type="submit" class="button btn-small btn-danger">Deny</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p class="info-text">No new user registrations awaiting approval.</p>
         {% endif %}

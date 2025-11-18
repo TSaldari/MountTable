@@ -52,43 +52,45 @@
         </div>
 
         <h2>Your Orders ({{ orders|length }} total)</h2>
-
-        {% if orders %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Order #</th>
-                    <th>Date Submitted</th>
-                    <th>Items</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td><strong>#{{ order.request_id }}</strong></td>
-                    <td>{{ order.request_date.strftime('%B %d, %Y at %I:%M %p') }}</td>
-                    <td>{{ order.item_count }} item{% if order.item_count != 1 %}s{% endif %}</td>
-                    <td>
-                        {% if order.status == 'pending' %}
-                        <span class="status-badge status-pending">{{ order.status|capitalize }}</span>
-                        {% elif order.status == 'approved' %}
-                        <span class="status-badge status-approved" style="background-color: #28a745; color: white;">{{
-                            order.status|capitalize }}</span>
-                        {% elif order.status == 'denied' %}
-                        <span class="status-badge" style="background-color: #dc3545; color: white;">{{
-                            order.status|capitalize }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('order_confirmation', request_id=order.request_id) }}"
-                            class="button btn-small">View Details</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            {% if orders %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Date Submitted</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>#{{ order.request_id }}</strong></td>
+                        <td>{{ order.request_date.strftime('%B %d, %Y at %I:%M %p') }}</td>
+                        <td>{{ order.item_count }} item{% if order.item_count != 1 %}s{% endif %}</td>
+                        <td>
+                            {% if order.status == 'pending' %}
+                            <span class="status-badge status-pending">{{ order.status|capitalize }}</span>
+                            {% elif order.status == 'approved' %}
+                            <span class="status-badge status-approved"
+                                style="background-color: #28a745; color: white;">{{
+                                order.status|capitalize }}</span>
+                            {% elif order.status == 'denied' %}
+                            <span class="status-badge" style="background-color: #dc3545; color: white;">{{
+                                order.status|capitalize }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('order_confirmation', request_id=order.request_id) }}"
+                                class="button btn-small">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <div class="user-info" style="text-align: center; padding: 40px;">
             <p style="font-size: 18px; color: #666;">You haven't placed any orders yet.</p>

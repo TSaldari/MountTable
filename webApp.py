@@ -446,7 +446,7 @@ def order_form():
                          user_id=display_id,
                          allergen_data=json.dumps(ALLERGEN_MAP))
 
-@app.route("/orderHistory")
+@app.route("/student/orderHistory")
 @login_required(role="student")
 def order_history():
     """
@@ -499,7 +499,7 @@ def order_history():
         user_id=display_id
     )
 
-@app.route("/order_confirmation/<int:request_id>")
+@app.route("/student/order_confirmation/<int:request_id>")
 @login_required(role="student")
 def order_confirmation(request_id):
     """

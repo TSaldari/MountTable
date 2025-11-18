@@ -1,6 +1,6 @@
-# Mount Table Food Management System
+# Mount Table Web Application
 
-A comprehensive web-based food pantry management system designed for Mount St. Mary's University. This application enables students to request food items while allowing administrators to manage inventory, approve orders, and track food distribution analytics.
+A comprehensive web-based food management system designed for the Mount's free food resource: The Mount Table. This application enables students to request food items while allowing administrators to manage inventory, approve orders, and track food distribution analytics.
 
 ---
 
@@ -37,9 +37,9 @@ A comprehensive web-based food pantry management system designed for Mount St. M
 ## 💻 System Requirements
 
 ### Software Dependencies
-- **Python**: Version 3.8 or higher
+- **Python**: Version 3.14 or higher
 - **MySQL Server**: Version 8.0 or higher
-- **MySQL Workbench**: For database management (recommended)
+- **MySQL Workbench**: For database management (required)
 - **Web Browser**: Chrome, Firefox, Safari, or Edge (latest versions)
 
 ### Python Packages
@@ -55,70 +55,60 @@ Flask-WTF==1.2.1
 
 ## 🚀 Installation & Setup
 
-### Step 1: Install MySQL and MySQL Workbench
+### Step 1: Install MySQL Server, MySQL Workbench, Visual Studio, and Python
 
-1. Download and install **MySQL Server** from [mysql.com](https://dev.mysql.com/downloads/mysql/)
-2. Download and install **MySQL Workbench** from [mysql.com](https://dev.mysql.com/downloads/workbench/)
-3. During MySQL installation, set a root password (you'll need this later)
+1. Download and install **Python** from [python.org](https://www.python.org/downloads/)
+1. Download and isntall **Visual Studio** from [microsoft.com](https://apps.microsoft.com/detail/xpdcfjdklzjlp8?hl=en-US&gl=US)
+2. Download and install **MySQL Server** from [mysql.com](https://dev.mysql.com/downloads/mysql/)
+3. Download and install **MySQL Workbench** from [mysql.com](https://dev.mysql.com/downloads/workbench/)
+4. During MySQL Server installation, set a root password (you'll need this later, so remember it)
 
-### Step 2: Set Up the Database
+### Step 2: Set Up the Database Server
 
 1. Open **MySQL Workbench**
 2. Connect to your local MySQL server (default: `localhost:3306`)
-3. Open the `instance/MountTable.sql` file
-4. Execute the entire script to create the database and tables:
-   - Click **Execute** (⚡ icon) or press `Ctrl+Shift+Enter`
-5. Verify the database was created:
-   ```sql
-   USE FoodManagementDB;
-   SHOW TABLES;
-   ```
+3. Verify That login was possible, then move to the next steps.
 
-### Step 3: Populate the Database
+### Step 3: Create/Populate the Database
 
-**Create an Admin Account:**
-```sql
-INSERT INTO Logins (user_id, password_hash, role, first_name, last_name, email)
-VALUES ('MT-00000001', 
-        '$argon2id$v=19$m=65536,t=3,p=4$yourhashhere', 
-        'admin', 
-        'Admin', 
-        'User', 
-        'admin@msmary.edu');
-```
+1. Open a command prompt and traverse to the path of your MySQL Server's bin folder:
+  ```bash
+  cd "C:\Program Files\MySQL\MySQL Server 9.5\bin"
+  ```
+2. Login to your MySQL server, and enter your password:
+  ```bash
+  mysql -u root -p
+  ```
+3. Import the schema:
+  ```bash
+  CREATE DATABASE foodmanagementdb;
+  USE foodmanagementdb;
+  exit
+  ```
 
-> **Note**: You'll need to generate a password hash first by running Python:
-> ```python
-> from argon2 import PasswordHasher
-> ph = PasswordHasher()
-> print(ph.hash("YourPasswordHere"))
-> ```
+4. Import the MountTable.sql dump file to get all your tables and information:
+  ```bash
+  mysql -u root -p foodmanagementdb < C:\Users\missy\Documents\MountTable\MountTable-main\instance\MountTable.sql
+  ```
 
-**Add Food Inventory Items:**
-```sql
-INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
-('Chicken Soup', 'Soup', 50, '10.5oz'),
-('Tomato Soup', 'Soup', 45, '10.75oz'),
-('Chicken Broth', 'Broth/Bouillon', 30, '14oz'),
--- Add more items as needed
-```
+Congrats, your MySQL database should be all set up
 
 ### Step 4: Install Python Dependencies
 
 1. Open Command Prompt (Windows) or Terminal (Mac/Linux)
 2. Navigate to the project directory:
    ```bash
-   cd path/to/MountTable
+   cd "path/to/MountTable"
    ```
 3. Install required packages:
    ```bash
-   pip install Flask mysql-connector-python argon2-cffi python-dotenv Flask-WTF
+   py -m pip install Flask mysql-connector-python argon2-cffi python-dotenv Flask-WTF
    ```
 
 ### Step 5: Configure Environment Variables
 
-1. Create a file named `.env` in the project root directory
-2. Add the following configuration (replace with your MySQL password):
+1. Look at the .env file in your project directory
+2. Edit the following configuration in notepad(replace with your MySQL password):
    ```env
    DB_HOST=localhost
    DB_USER=root
@@ -126,8 +116,6 @@ INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
    DB_NAME=FoodManagementDB
    SECRET_KEY=your-secret-key-change-this-to-random-string
    ```
-
-3. **IMPORTANT**: Never commit the `.env` file to version control!
 
 ### Step 6: Run the Application
 
@@ -162,11 +150,10 @@ INSERT INTO FoodInventory (item_name, category, quantity, weight) VALUES
    - Enter your first and last name
    - Use your **Mount St. Mary's email** (@msmary.edu or @email.msmary.edu)
    - Create a secure password (minimum 8 characters)
-   - Complete all required demographic information
-   - Select any dietary restrictions (optional)
+   - Complete all required demographic information -- optional
 3. Click **"Create Account"**
 4. **Save your Mount Table ID** (format: MT-########) - you'll need this to log in!
-5. Wait for administrator approval (you'll receive confirmation)
+5. Wait for administrator approval -- give it up to 24 hours!
 
 #### 2. Logging In
 
@@ -369,59 +356,11 @@ From the dashboard, you can quickly:
 
 ---
 
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### "Access denied for user 'root'@'localhost'"
-- **Solution**: Check your `.env` file has the correct MySQL password
-- Verify MySQL server is running in MySQL Workbench
-
-#### "Database 'FoodManagementDB' doesn't exist"
-- **Solution**: Run the `MountTable.sql` script in MySQL Workbench
-- Verify the database was created: `SHOW DATABASES;`
-
-#### "ModuleNotFoundError: No module named 'flask'"
-- **Solution**: Install Python dependencies:
-  ```bash
-  pip install Flask mysql-connector-python argon2-cffi python-dotenv Flask-WTF
-  ```
-
-#### Images Not Displaying
-- **Solution**: Verify images are in the `static/Images/` folder
-- Check image filenames match exactly (case-sensitive)
-- Clear browser cache and refresh
-
-#### "This email address is already registered"
-- **Solution**: Email addresses must be unique
-- Use a different email or contact admin for assistance
-
-#### Can't Access Order Form After Registration
-- **Solution**: Your account needs admin approval
-- Status shows as "newUser" until approved
-- Contact an administrator to approve your registration
-
-#### Items Grayed Out on Order Form
-- **Reasons**:
-  1. Item is out of stock
-  2. Item contains an allergen you selected
-- Hover over the item to see the reason
-- Contact admin if you believe this is an error
-
-### Getting Help
-
-For technical support or issues not covered here:
-1. Check the error message displayed in the browser
-2. Contact the application administrator
-3. For Mount Table students: Visit in person during operating hours
-
----
-
 ## 🔒 Security Features
 
 This application includes several security measures:
 
-- **Password Hashing**: Argon2 encryption (industry standard)
+- **Password Hashing**: Argon2 encryption (industry standard) -- Also has auto password salting
 - **CSRF Protection**: Prevents cross-site request forgery attacks
 - **Role-Based Access**: Students and admins have separate permissions
 - **Session Management**: Automatic timeout after inactivity
@@ -445,42 +384,14 @@ This application includes several security measures:
 
 ---
 
-## 📞 Contact & Support
-
-**Mount Table Office**  
-Mount St. Mary's University  
-[Insert Address]  
-[Insert Phone Number]  
-[Insert Email]
-
-**Operating Hours**  
-[Insert Hours]
-
-**Technical Support**  
-[Insert Contact Information]
-
----
-
 ## 📄 License & Credits
 
-**Developed by**: Thomas E. Saldari 
+**Developed by**: Thomas E. Saldari, Jr  
 **Institution**: Mount St. Mary's University  
 **Year**: 2025  
 
-This application is designed for educational and operational use by Mount St. Mary's University Mount Table food pantry program.
+This application is designed for educational and operational use by Mount St. Mary's University's free food resource program, The Mount Table.
 
 ---
 
-## 🔄 Version History
-
-**Version 1.0** (January 2025)
-- Initial release
-- Student registration and ordering
-- Admin dashboard and inventory management
-- Order approval system
-- User management and password reset
-- Analytics and reporting
-
----
-
-**Thank you for using Mount Table Food Management System!** 🍽️
+**Thank you for using The Mount Table Web Application!** 🍽️

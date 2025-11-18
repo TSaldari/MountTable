@@ -67,52 +67,53 @@
         <!-- Search Results -->
         {% if users is not none %}
         <h2>Search Results</h2>
+        <div class="table-responsive">
+            {% if users %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><strong>{{ user.user_id }}</strong></td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.role == 'admin' %}
+                            <span class="status-badge" style="background-color: #e74c3c; color: white;">Admin</span>
+                            {% elif user.role == 'student' %}
+                            <span class="status-badge status-approved">Student</span>
+                            {% elif user.role == 'newUser' %}
+                            <span class="status-badge status-pending">New User</span>
+                            {% else %}
+                            <span class="status-badge">{{ user.role|capitalize }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('reset_password', user_id=user.user_id) }}"
+                                class="button btn-small btn-success">Reset Password</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="info-text" style="text-align: center; padding: 30px;">
+                No users found matching your search.
+            </p>
+            {% endif %}
 
-        {% if users %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Created Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td><strong>{{ user.user_id }}</strong></td>
-                    <td>{{ user.first_name }} {{ user.last_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        {% if user.role == 'admin' %}
-                        <span class="status-badge" style="background-color: #e74c3c; color: white;">Admin</span>
-                        {% elif user.role == 'student' %}
-                        <span class="status-badge status-approved">Student</span>
-                        {% elif user.role == 'newUser' %}
-                        <span class="status-badge status-pending">New User</span>
-                        {% else %}
-                        <span class="status-badge">{{ user.role|capitalize }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
-                    <td>
-                        <a href="{{ url_for('reset_password', user_id=user.user_id) }}"
-                            class="button btn-small btn-success">Reset Password</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p class="info-text" style="text-align: center; padding: 30px;">
-            No users found matching your search.
-        </p>
-        {% endif %}
-
-        {% endif %}
+            {% endif %}
+        </div>
 
         <div style="margin-top: 30px;">
             <a href="{{ url_for('adminDash') }}" class="button" style="background-color: #666;">← Back to Dashboard</a>
